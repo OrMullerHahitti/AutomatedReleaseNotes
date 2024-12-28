@@ -26,7 +26,6 @@ class Sprint(BaseModel):
     name: str = Field(..., alias="name")
     start_date: datetime.date = Field(..., alias="start_date", example="2021-24-01")
     end_date: datetime.date =Field(..., alias="end_date", example="2021-24-01")
-    status: str = Field(..., alias="status",description="status of sprint")
 
 
 
