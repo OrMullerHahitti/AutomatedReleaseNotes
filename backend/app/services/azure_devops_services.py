@@ -3,27 +3,25 @@ from fastapi import HTTPException
 from app.utils.requests import make_request
 from app.models.models import *
 from app.utils.config import *
-from base_service import BasePlatform
-import base_service
+from app.services.base_service import BasePlatform
+from datetime import datetime
 
 
-#TODO: perhaps write Authentication function. there will be 3 auth in total
-#TODO: get a TOKEN for AUTH
+
+
+
 class AzureDevOpsService(BasePlatform):
+
     async def fetch_commits(self, start_date: str, end_date: str) -> List[Commit]:
-        base_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/git/repositories/{repository}/commits'
-        headers = {
-            'Authorization': 'Basic <PAT>'  # Replace with your Azure DevOps Personal Access Token (encoded as base64)
-        }
+        base_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/git/repositories/{azure_devops_repo}/commits'
+
         params = {
             'searchCriteria.itemVersionVersion': start_date,
             'searchCriteria.itemVersionEndDate': end_date,
         }
 
         try:
-            # Use the utility function for the GET request
-            # TODO: make_request ignores "params" , handle it
-            response = await make_request(url=base_url, method='POST', headers=headers, data=params)
+            response = await make_request(url=base_url, method='POST', headers=authentication_headers, data=params)
             commits = response.json()
 
             # Extract commit ids
@@ -42,18 +40,15 @@ class AzureDevOpsService(BasePlatform):
 
     async def fetch_sprints(self) -> List[Sprint]:
         try:
-            # Use the utility function for the GET request
-            # TODO: make_request ignores "params" , handle it
+
             base_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/{azure_devops_team}/_apis/work/teamsettings/iterations?api-version=7.1'
-            headers = {
-                'Authorization': azure_devops_pat
-            }
-            response = await make_request(url=base_url, method='GET', headers=headers)
+            response = await make_request(url=base_url, method='GET', headers=authentication_headers)
             sprints_data = response.json()
 
             # Extract sprints and map them to the Sprint model
             sprints = []
-            for sprint in sprints_data.get("values", []):
+            for sprint in sprints_data.get("value", {}):
+
                 sprint_id = sprint.get("id")
                 sprint_name = sprint.get("name")
                 start_date_str = sprint.get("attributes", {}).get("startDate")
@@ -61,18 +56,18 @@ class AzureDevOpsService(BasePlatform):
 
                 # Convert the start and finish dates from string to datetime.date
                 start_date = None
-                end_date = None
+                finish_date = None
                 if start_date_str:
-                    start_date = datetime.strptime(start_date_str, "%Y-%m-%dT%H:%M:%S.%fZ").date()
+                    start_date = datetime.strptime(start_date_str, "%Y-%m-%dT%H:%M:%SZ").date()
                 if finish_date_str:
-                    end_date = datetime.strptime(finish_date_str, "%Y-%m-%dT%H:%M:%S.%fZ").date()
+                    finish_date = datetime.strptime(finish_date_str, "%Y-%m-%dT%H:%M:%SZ").date()
 
                 # Create a Sprint model and append to the list
                 sprint = Sprint(
                     id=sprint_id,
                     name=sprint_name,
                     start_date=start_date,
-                    end_date=end_date
+                    finish_date=finish_date
                 )
                 sprints.append(sprint)
 

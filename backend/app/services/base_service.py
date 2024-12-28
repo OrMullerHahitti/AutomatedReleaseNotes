@@ -1,8 +1,7 @@
 # app/services/base_service.py
 from abc import ABC, abstractmethod
 from typing import List
-
-from app.models.models import WorkItem
+from app.models.models import *
 
 
 class BasePlatform(ABC):
