@@ -5,8 +5,10 @@ from email.policy import default
 import json
 from app.utils.config import *
 from app.utils.requests import make_request
-from app.services.azure_devops_services import *
+#from app.services.azure_devops_services import *
 from typing import List
+from app.models.models import *
+from app.utils.requests import *
 
 
 # baseurl = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/{azure_devops_team}/_apis/work/teamsettings/iterations'
@@ -24,14 +26,31 @@ from typing import List
 
 
 # TEST FETCH_SPRINTS
-service = AzureDevOpsService()
-sprints = asyncio.run(service.fetch_sprints())
-for sprint in sprints:
-        print(f"Sprint ID: {sprint.id}, Name: {sprint.name}, Start Date: {sprint.start_date}, End Date: {sprint.finish_date}")
 
 
 
 
+async def fetch_work_items(sprint_id: str) -> List[WorkItem]:
+
+    # Construct the WIQL query to fetch completed work items within the date range
+#     wiql_query = f"""
+#     SELECT [System.Id], [System.Title], [System.WorkItemType], [System.State], [System.Description], [System.ClosedDate]
+#     FROM WorkItems
+#     WHERE [System.TeamProject] = '{azure_devops_project}'
+#     AND [System.IterationPath]= '{sprint_id}'  -- Filter by sprint
+#     ORDER BY [System.ClosedDate] DESC
+# """
+
+
+    base_url = (f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/{azure_devops_team}/_apis/work/teamsettings/iterations/{sprint_id}/workitems?api-version=7.1)'
+
+    # Step 1: Execute the WIQL query
+    response = await make_request(url=base_url, method='POST', headers=authentication_headers_azure, data={'query': wiql_query})
+    wiql_data = response.json()
+    return wiql_data
+
+
+data = asyncio.run(fetch_work_items("Sprint 57"))
 
 
 # Sprints API Dcoumentation:
