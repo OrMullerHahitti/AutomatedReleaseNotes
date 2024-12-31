@@ -1,4 +1,6 @@
+from azure_authentication_client import authenticate_openai
 from fastapi import FastAPI, HTTPException
+from langchain.chat_models import AzureChatOpenAI
 from pydantic import BaseModel, Field
 from langchain.llms import OpenAI, HuggingFaceHub
 from langchain.prompts import PromptTemplate
@@ -26,13 +28,14 @@ def get_llm(config: LLMConfig):
         config (LLMConfig): LLM configuration
         make sure the provider is openai if you want to use openai  '''
     if config.provider == "openai":
+        api_key = authenticate_openai().api_key
+
         # OpenAI initialization
-        return OpenAI(
-            model=config.model_name or "text-davinci-003",
-            temperature=config.temperature,
-            max_tokens=config.max_tokens,
-            openai_api_key=config.api_key
-        )
+        return AzureChatOpenAI(deployment_name=config.model_name or "gpt-4o-deployment",
+                               temperature=config.temperature,
+                               api_key=api_key,
+                               azure_endpoint='https://function-app-open-ai-prod-apim.azure-api.net/proxy-api/')
+
     elif config.provider == "huggingface":
         # HuggingFace initialization
         return HuggingFaceHub(
