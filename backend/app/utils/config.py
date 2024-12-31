@@ -10,7 +10,6 @@ load_dotenv()
 
 
 azure_devops_org = os.getenv('AZURE_DEVOPS_ORG')
-
 azure_devops_project = os.getenv('AZURE_DEVOPS_PROJECT')
 azure_devops_team = os.getenv('AZURE_DEVOPS_TEAM')
 azure_devops_repo = os.getenv('AZURE_DEVOPS_REPO')

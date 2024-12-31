@@ -5,6 +5,7 @@ from app.models.models import *
 from app.utils.config import *
 from app.services.base_service import BasePlatform
 from datetime import datetime
+import json
 
 
 
@@ -37,34 +38,36 @@ class AzureDevOpsService(BasePlatform):
     async def fetch_work_items(self, sprint_name: str) -> List[WorkItem]:
         try:
 
-            # Construct the WIQL query to fetch completed work items within the date range
-            wiql_query = f"""
-                SELECT [System.Id], [System.Title], [System.WorkItemType], [System.State], [System.Description], [System.ClosedDate]
-                FROM WorkItems
-                WHERE [System.TeamProject] = '{azure_devops_project}'
-                AND [System.IterationPath] UNDER '{azure_devops_project}\\{azure_devops_iteration_team}\\{sprint_name}'  -- Filter by sprint
-                -- AND [System.State] IN ('Closed') -- currently does not filter
-                ORDER BY [System.ClosedDate] DESC
-            """
+            # Step 1: Extract the work item ids relevant to the input sprint
+
+            # Define WIQL query to fetch all work items for the sprint
+            wiql_query = {
+                "query": f"""
+                    SELECT [System.Id], [System.WorkItemType]
+                    FROM WorkItems
+                    WHERE [System.IterationPath] = '{azure_devops_project}\\{azure_devops_iteration_team}\\{sprint_name}'
+                    AND [System.TeamProject] = '{azure_devops_project}'
+                    ORDER BY [System.WorkItemType]
+                """
+            }
+
+            # URL to run the WIQL query
+            wiql_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/wit/wiql?api-version=7.1'
+
+            # Make the request to the WIQL API
+            wiql_response = await make_request(url=wiql_url, method='POST', headers=self.auth_headers, data=wiql_query)
+            wiql_json_response = wiql_response.json()
+
+            # Fetch the work item identifiers
+            work_item_ids = [item['id'] for item in wiql_json_response['workItems']]
 
 
-            base_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/{azure_devops_team}/_apis/wit/wiql?api-version=7.1'
-
-            # Step 1: Execute the WIQL query
-            response = await make_request(url=base_url, method='POST', headers=self.auth_headers, data={'query': wiql_query})
-            wiql_data = response.json()
-
-            # Extract work item IDs from the query result
-            work_item_ids = [item['id'] for item in wiql_data['workItems']]
-
-            if not work_item_ids:
-                return []  # If no work items found, return an empty list
 
             # Step 2: Fetch the detailed work items information
-            # TODO: make sure this query is correct
             work_item_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/wit/workitems?ids={",".join(map(str, work_item_ids))}&api-version=7.1'
             work_item_response = await make_request(url=work_item_url, method='GET', headers=self.auth_headers)
             work_item_data = work_item_response.json()
+            print(json.dumps(work_item_data, indent=2))
 
             # Step 3: Map the response to the WorkItem model
             work_items = []
