@@ -5,7 +5,7 @@ from app.utils.requests import make_request
 import logging
 
 logger = logging.getLogger(__name__)
-
+#
 async def generate_response(self, work_items: list[WorkItem]) -> str:
     headers = {
         "Authorization": f"Bearer {llm_api_key}",

@@ -7,7 +7,7 @@ from app.models.LLM import GenerateRequest, GenerateResponse
 from app.models.models import Document
 from app.services.llm_service import generate_release_notes
 import logging
-
+#
 router = APIRouter(
     prefix="/api",
     tags=["Generate Release Notes"]
