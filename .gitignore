@@ -4,3 +4,4 @@
 /backend/pip.ini
 /backend/azure_token_cache.bin
 /backend/aiAPIcheck.py
+/backend/app/logs/

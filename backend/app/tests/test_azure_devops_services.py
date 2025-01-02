@@ -9,18 +9,17 @@ from app.services.azure_devops_services import *
 from typing import List
 from app.models.models import *
 from app.utils.requests import *
+import pytest
 
 
 
+async def test1():
+    azure_test = AzureDevOpsService()
+    sprints_test = await azure_test.fetch_sprints()
+    work_items_test = await azure_test.fetch_work_items("Sprint 55")
 
 
-azure_test = AzureDevOpsService(auth_headers=authentication_headers_azure)
-work_items_test = asyncio.run(azure_test.fetch_work_items("Sprint 55"))
-print("\n\n\n\n")
-for workItem in work_items_test:
-    print(workItem)
-
-
+asyncio.run(test1())
 
 
 
