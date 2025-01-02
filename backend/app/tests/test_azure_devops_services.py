@@ -15,8 +15,8 @@ import pytest
 
 async def test1():
     azure_test = AzureDevOpsService()
-    sprints_test = await azure_test.fetch_sprints()
-    work_items_test = await azure_test.fetch_work_items("Sprint 55")
+    # sprints_test = await azure_test.fetch_sprints()
+    work_items_test = await azure_test.fetch_work_items("Sprint 54")
 
 
 asyncio.run(test1())

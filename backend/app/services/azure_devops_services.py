@@ -71,7 +71,7 @@ class AzureDevOpsService(BasePlatform):
                     FROM WorkItems
                     WHERE [System.IterationPath] = '{azure_devops_project}\\{azure_devops_iteration_team}\\{sprint_name}'
                     AND [System.TeamProject] = '{azure_devops_project}'
-                    ORDER BY [System.WorkItemType]
+                    ORDER BY [System.Id]
                 """
             }
 
@@ -104,7 +104,9 @@ class AzureDevOpsService(BasePlatform):
                 description = work_item['fields'].get('System.Description', '')
 
                 # Append the work item to the list
-                work_items.append(WorkItem(id=item_id, title=title, type=item_type, state=state, description=description))
+                item_to_add = WorkItem(id=item_id, title=title, type=item_type, state=state, description=description)
+                work_items.append(item_to_add)
+                self.logger.info(f"added: {item_to_add}")
 
             return work_items
 
