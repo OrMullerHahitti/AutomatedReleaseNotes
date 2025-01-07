@@ -1,12 +1,13 @@
+import asyncio
 from typing import List
 from fastapi import HTTPException
 from ..utils.requests import make_request
 from ..models.models import *
 from ..utils.config import *
 from ..utils.CustomLogger import CustomLogger
-from ..services.base_service import BasePlatform
+from backend.app.models.base_service import BasePlatform
 from datetime import datetime
-import json
+
 
 class AzureDevOpsService(BasePlatform):
 
@@ -119,3 +120,23 @@ class AzureDevOpsService(BasePlatform):
 
 
 
+
+
+
+    async def fetch_work_items_for_multiple_sprints(self, sprint_names: List[str]) -> List[WorkItem]:
+        try:
+            # Create a task per each sprint
+            tasks = [self.fetch_work_items(sprint_name) for sprint_name in sprint_names]
+
+            # Run tasks concurrently using asyncio.gather
+            all_work_items = await asyncio.gather(*tasks)
+
+            # Extract the work items from all sprints into a single list
+            flat_work_items = [item for sprint_work_items in all_work_items for item in sprint_work_items]
+            self.logger.info(f"Successfully fetched {len(flat_work_items)} work items from {len(sprint_names)} sprints.")
+
+            return flat_work_items
+
+        except Exception as e:
+            self.logger.error(f"Failed to fetch work items for multiple sprints: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Failed to fetch_work_items for multiple sprints: {str(e)}")

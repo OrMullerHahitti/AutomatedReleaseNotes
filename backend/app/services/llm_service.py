@@ -9,11 +9,11 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from backend.app.models.models import WorkItem
 from backend.app.utils.getters import get_llm
-from backend.app.utils.config import summarize_prompt_text, format_prompt_text, release_notes_prompt_text
+#from backend.app.utils.config import summarize_prompt_text, format_prompt_text, release_notes_prompt_text
 
 
 
-def generate_doc(work_items: List[WorkItem]):
+async def generate_doc(work_items: List[WorkItem]):
     '''Generate release notes based on the provided work items
     Args:
         work_items (List[WorkItem]): List of work items to generate release notes from'''
@@ -29,7 +29,7 @@ def generate_doc(work_items: List[WorkItem]):
             input_variables=["work_items"],
             template=summarize_prompt_text
         )
-        llm = get_llm(request.config)
+
 
 
         # Combine chains into a sequential chain with manual input for the second step

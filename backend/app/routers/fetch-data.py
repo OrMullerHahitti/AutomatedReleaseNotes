@@ -1,20 +1,14 @@
-import datetime
 from typing import List,Annotated
 
-from fastapi import APIRouter,HTTPException,Query,Body,Path
+from fastapi import APIRouter,HTTPException,Query, Path
 
-from app.tests.azure_devops_api import azure_devops_service
-from ..services.base_service import BasePlatform
-from fastapi.exception_handlers import http_exception_handler
-from requests_toolbelt.multipart.decoder import BodyPart
-
-from app.models.models import Commit, Sprint, WorkItem
+from app.models.models import Sprint, WorkItem
 from app.services.azure_devops_services import AzureDevOpsService
 
 router = APIRouter()
 
-@router.post("/get-work-items", response_model=List[WorkItem])
-async def get_work_items(request:Annotated[List[str],Body(...,description="list of Sprints")] ):
+@router.get("/work-items", response_model=List[WorkItem])
+async def get_work_items(request:Annotated[List[str],Query(...,description="list of Sprints")] ):
     '''
     
     Fetch work items (User Stories,Features,Tasks) from azure devops based on range

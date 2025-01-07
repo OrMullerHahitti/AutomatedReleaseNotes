@@ -8,7 +8,8 @@ from pathlib import Path
 async def test1():
     azure_test = AzureDevOpsService()
     # sprints_test = await azure_test.fetch_sprints()
-    await azure_test.fetch_work_items("Sprint 56")
+    # await azure_test.fetch_work_items("Sprint 56")
+    test = await azure_test.fetch_work_items_for_multiple_sprints(["Sprint 55", "Sprint 56"])
 
 
 asyncio.run(test1())
