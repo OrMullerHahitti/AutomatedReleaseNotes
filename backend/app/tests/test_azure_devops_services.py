@@ -1,17 +1,9 @@
 
 import asyncio
-import base64
-from email.policy import default
-import json
-from app.utils.config import *
-from app.utils.requests import make_request
-from app.services.azure_devops_services import *
-from typing import List
-from app.models.models import *
-from app.utils.requests import *
-import pytest
+from backend.app.services.azure_devops_services import AzureDevOpsService
+from backend.app.utils.config import *
 
-
+from pathlib import Path
 
 async def test1():
     azure_test = AzureDevOpsService()
