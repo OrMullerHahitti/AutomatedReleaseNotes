@@ -1,10 +1,10 @@
 from typing import List
 from fastapi import HTTPException
-from app.utils.requests import make_request
-from app.models.models import *
-from app.utils.config import *
-from app.utils.CustomLogger import CustomLogger
-from app.services.base_service import BasePlatform
+from ..utils.requests import make_request
+from ..models.models import *
+from ..utils.config import *
+from ..utils.CustomLogger import CustomLogger
+from ..services.base_service import BasePlatform
 from datetime import datetime
 import json
 
@@ -55,65 +55,67 @@ class AzureDevOpsService(BasePlatform):
             self.logger.error(f"Failed to fetch sprints: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Failed to fetch_sprints: {str(e)}")
 
-
+# from backend.app.models.models import WorkItem, Sprint
+# from backend.app.utils.config import azure_devops_org, azure_devops_project, azure_devops_team, \
+#     authentication_headers_azure, log_directory_path, logging_level, log_file_name
 
 
     async def fetch_work_items(self, sprint_name: str) -> List[WorkItem]:
-        try:
+            try:
 
-            # Step 1: Extract the work item ids relevant to the input sprint
+                # Step 1: Extract the work item ids relevant to the input sprint
 
-            # Define WIQL query to fetch all work items for the sprint
-            self.logger.info(f"Fetching work items for sprint '{sprint_name}'.")
-            wiql_query = {
-                "query": f"""
-                    SELECT [System.Id], [System.WorkItemType]
-                    FROM WorkItems
-                    WHERE [System.IterationPath] = '{azure_devops_project}\\{azure_devops_iteration_team}\\{sprint_name}'
-                    AND [System.TeamProject] = '{azure_devops_project}'
-                    ORDER BY [System.Id]
-                """
-            }
+                # Define WIQL query to fetch all work items for the sprint
+                self.logger.info(f"Fetching work items for sprint '{sprint_name}'.")
+                wiql_query = {
+                    "query": f"""
+                        SELECT [System.Id], [System.WorkItemType]
+                        FROM WorkItems
+                        WHERE [System.IterationPath] = '{azure_devops_project}\\{azure_devops_iteration_team}\\{sprint_name}'
+                        AND [System.TeamProject] = '{azure_devops_project}'
+                        ORDER BY [System.Id]
+                    """
+                }
 
-            # URL to run the WIQL query
-            wiql_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/wit/wiql?api-version=7.1'
+                # URL to run the WIQL query
+                wiql_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/wit/wiql?api-version=7.1'
 
-            # Make the request to the WIQL API
-            wiql_response = await make_request(url=wiql_url, method='POST', headers=self.auth_headers, data=wiql_query)
-            wiql_json_response = wiql_response.json()
+                # Make the request to the WIQL API
+                wiql_response = await make_request(url=wiql_url, method='POST', headers=self.auth_headers, data=wiql_query)
+                wiql_json_response = wiql_response.json()
 
-            # Fetch the work item identifiers
-            work_item_ids = [item['id'] for item in wiql_json_response['workItems']]
-            self.logger.info(f"detected {len(work_item_ids)} workitems for the following query: \n {wiql_query}")
-
-
-
-            # Step 2: Fetch the detailed work items information
-            work_item_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/wit/workitems?ids={",".join(map(str, work_item_ids))}&api-version=7.1'
-            work_item_response = await make_request(url=work_item_url, method='GET', headers=self.auth_headers)
-            work_item_data = work_item_response.json()
-            self.logger.info(f"Successfully fetched {len(work_item_data['value'])} work items for sprint '{sprint_name}'.")
-
-            # Step 3: Map the response to the WorkItem model
-            work_items = []
-            for work_item in work_item_data['value']:
-                item_id = str(work_item['id'])
-                title = work_item['fields']['System.Title']
-                item_type = work_item['fields']['System.WorkItemType']
-                state = work_item['fields']['System.State']
-                description = work_item['fields'].get('System.Description', '')
-
-                # Append the work item to the list
-                item_to_add = WorkItem(id=item_id, title=title, type=item_type, state=state, description=description)
-                work_items.append(item_to_add)
-                self.logger.info(f"added: {item_to_add}")
-
-            return work_items
+                # Fetch the work item identifiers
+                work_item_ids = [item['id'] for item in wiql_json_response['workItems']]
+                self.logger.info(f"detected {len(work_item_ids)} workitems for the following query: \n {wiql_query}")
 
 
-        except Exception as e:
-            self.logger.error(f"Failed to fetch work items for sprint '{sprint_name}': {str(e)}")
-            raise HTTPException(status_code=500, detail=f"Failed to fetch_work_items: {str(e)}")
+
+                # Step 2: Fetch the detailed work items information
+                work_item_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/wit/workitems?ids={",".join(map(str, work_item_ids))}&api-version=7.1'
+                work_item_response = await make_request(url=work_item_url, method='GET', headers=self.auth_headers)
+                work_item_data = work_item_response.json()
+                self.logger.info(f"Successfully fetched {len(work_item_data['value'])} work items for sprint '{sprint_name}'.")
+
+                # Step 3: Map the response to the WorkItem model
+                work_items = []
+                for work_item in work_item_data['value']:
+                    item_id = str(work_item['id'])
+                    title = work_item['fields']['System.Title']
+                    item_type = work_item['fields']['System.WorkItemType']
+                    state = work_item['fields']['System.State']
+                    description = work_item['fields'].get('System.Description', '')
+
+                    # Append the work item to the list
+                    item_to_add = WorkItem(id=item_id, title=title, type=item_type, state=state, description=description)
+                    work_items.append(item_to_add)
+                    self.logger.info(f"added: {item_to_add}")
+
+                return work_items
+
+
+            except Exception as e:
+                self.logger.error(f"Failed to fetch work items for sprint '{sprint_name}': {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Failed to fetch_work_items: {str(e)}")
 
 
 

@@ -16,7 +16,18 @@ import pytest
 async def test1():
     azure_test = AzureDevOpsService()
     # sprints_test = await azure_test.fetch_sprints()
-    work_items_test = await azure_test.fetch_work_items("Sprint 54")
+    work_items_test = await azure_test.fetch_work_items("Sprint 56")
+
+
+    directory_path = Path(log_directory_path)
+    file_path = directory_path/'test.txt'
+    with file_path.open('a') as file:
+        for item in work_items_test:
+            file.write(f"{item.id}\n"
+                       f"{item.title}\n"
+                       f" {item.description}\n"
+                       f"{item.type}\n"
+                       f"{item.state}")
 
 
 asyncio.run(test1())
