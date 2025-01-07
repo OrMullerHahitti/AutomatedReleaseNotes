@@ -3,6 +3,7 @@
 import os
 import base64
 from dotenv import load_dotenv
+import json
 
 
 # Load environment variables from .env file
