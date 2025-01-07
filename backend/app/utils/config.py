@@ -25,3 +25,6 @@ authentication_headers_azure = {
 log_directory_path = os.getenv('LOG_DIRECTORY_PATH')
 log_file_name = os.getenv('LOG_FILE_NAME')
 logging_level = os.getenv('LOGGING_LEVEL')
+summarize_prompt_template = os.getenv('SUMMARIZE_PROMPT_TEMPLATE')
+format_prompt_template = os.getenv('FORMAT_PROMPT_TEMPLATE')
+release_notes_prompt_template = os.getenv('RELEASE_NOTES_PROMPT_TEMPLATE')

@@ -3,7 +3,7 @@ from types import new_class
 
 import httpx
 from fastapi import APIRouter, HTTPException
-from ..models.models import Document
+from ..models.models import *
 import logging
 from azure_authentication_client import authenticate_openai
 import openai
@@ -19,7 +19,7 @@ router = APIRouter(
     prefix="/api",
     tags=["Generate Release Notes"]
 )
-work_items=[]
+work_items =[]
 logger = logging.getLogger(__name__)
 
 @router.post("/generate-release-notes", response_model=Document)
@@ -34,6 +34,15 @@ async def generate_text(request: QueryRequest):
             Summarize them into short, categorized notes for release:
             """
         )
+
+        #TODO: how do we get the workItems here? shouldn't it be added to the QueryRequest model?
+
+        # Convert list of Workitems into nested dictionary
+        # Example: {'item1' : {'id' : 123 , 'title': "test" ,'description' = 'test', 'type': 'user tory' , 'state': "Closed"}}
+        work_items_nested_dict = { f"item{index}" : {'id' : item.id , 'title': item.title ,'description' : item.description , 'type': item.type ,
+                            'state': item.state } for index, item in enumerate(work_items)}
+
+
         llm=get_llm(request.config)
         summarize_chain = LLMChain(llm=llm, prompt=summarize_prompt)
 
@@ -51,6 +60,11 @@ async def generate_text(request: QueryRequest):
             """
         )
         format_chain = LLMChain(llm=llm, prompt=format_prompt)
+
+
+
+        #TODO: fix this implementation as following work_items_nested_dict
+
 
         # Combine chains into a sequential chain with manual input for the second step
         work_items_text = "\n".join(
