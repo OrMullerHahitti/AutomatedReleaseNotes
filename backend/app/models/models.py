@@ -33,5 +33,12 @@ class Sprint(BaseModel):
     start_date: datetime.date = Field(..., alias="start_date", example="2021-24-01")
     finish_date: datetime.date =Field(..., alias="finish_date", example="2021-24-01")
 
+class LLMconfig(BaseModel):
+    deployment_name: str
+    temperature: float
+    api_key: str
+    endpoint: str|None=None
+
+
 
 

@@ -2,18 +2,22 @@
 from types import new_class
 
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException,Body
 from ..models.models import *
 import logging
 from azure_authentication_client import authenticate_openai
 import openai
 authenticate_openai()
-
-
+from backend.app.services.llm_service import generate_doc
+from typing import List
+from backend.app.models import Sprint
 from langchain.chains.llm import LLMChain
 from langchain_core.prompts import PromptTemplate
 
-from ..services.llm_service import get_llm, QueryRequest
+from ..services.llm_service import get_llm
+from backend.app.services.azure_devops_services import BasePlatform,AzureDevOpsService
+from backend.app.services.llm_service import generate_doc
+
 
 router = APIRouter(
     prefix="/api",

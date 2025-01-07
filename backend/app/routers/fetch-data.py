@@ -33,7 +33,7 @@ async def get_work_items(request:Annotated[List[str],Body(...,description="list 
 
 
 
-@router.get("/get-sprints/{platform}" ,response_model=List[Sprint])
+@router.get("/sprints/" ,response_model=List[Sprint])
 async def get_sprints(platform : Annotated[str,Path("Azure",title="The platform we fetch from")]):
     '''
     

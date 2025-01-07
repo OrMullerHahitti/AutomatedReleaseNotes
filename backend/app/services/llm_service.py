@@ -1,3 +1,5 @@
+
+from typing import List
 from azure_authentication_client import authenticate_openai
 from fastapi import FastAPI, HTTPException
 from langchain.chat_models import AzureChatOpenAI
@@ -5,44 +7,57 @@ from pydantic import BaseModel, Field
 from langchain.llms import OpenAI, HuggingFaceHub
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+from backend.app.models.models import WorkItem
+from backend.app.utils.getters import get_llm
+from backend.app.utils.config import summarize_prompt_text, format_prompt_text, release_notes_prompt_text
 
-# Initialize FastAPI app
-app = FastAPI()
 
-# Define the configuration model
-class LLMConfig(BaseModel):
-    provider: str = Field(..., description="LLM provider, e.g., 'openai' or 'huggingface'")
-    model_name: str = Field(default=None, description="Model name for the selected provider")
-    temperature: float = Field(default=0.7, ge=0.0, le=1.0, description="Randomness of the output")
-    max_tokens: int = Field(default=256, ge=1, description="Maximum number of tokens in output")
-    api_key: str = Field(..., description="API key for the selected LLM provider")
 
-class QueryRequest(BaseModel):
-    prompt: str
-    config: LLMConfig
-
-# Function to initialize the LLM dynamically
-def get_llm(config: LLMConfig):
-    '''Initialize the LLM dynamically based on the configuration
+def generate_doc(work_items: List[WorkItem]):
+    '''Generate release notes based on the provided work items
     Args:
-        config (LLMConfig): LLM configuration
-        make sure the provider is openai if you want to use openai  '''
-    if config.provider == "openai":
-        api_key = authenticate_openai().api_key
+        work_items (List[WorkItem]): List of work items to generate release notes from'''
 
-        # OpenAI initialization
-        return AzureChatOpenAI(deployment_name=config.model_name or "gpt-4o-deployment",
-                               temperature=config.temperature,
-                               api_key=api_key,
-                               azure_endpoint='https://function-app-open-ai-prod-apim.azure-api.net/proxy-api/')
+    try:
+        # Convert list of Workitems into nested dictionary
+        # Example: {'item1' : {'id' : 123 , 'title': "test" ,'description' = 'test', 'type': 'user story' , 'state': "Closed"}}
+        work_items_nested_dict = {
+            f"item{index}": {'id': item.id, 'title': item.title, 'description': item.description, 'type': item.type,
+                             'state': item.state} for index, item in enumerate(work_items)}
 
-    elif config.provider == "huggingface":
-        # HuggingFace initialization
-        return HuggingFaceHub(
-            repo_id=config.model_name or "google/flan-t5-large",
-            model_kwargs={"temperature": config.temperature, "max_length": config.max_tokens},
-            huggingfacehub_api_token=config.api_key
+        summarize_prompt = PromptTemplate(
+            input_variables=["work_items"],
+            template=summarize_prompt_text
         )
-    else:
-        raise ValueError(f"Unsupported provider: {config.provider}")
+        llm = get_llm(request.config)
+
+
+        # Combine chains into a sequential chain with manual input for the second step
+        work_items_text = "\n".join(
+            f"- {item['title']}: {item.get('description', 'No description')} (Type: {item.get('type', 'N/A')})"
+            for item in work_items_nested_dict  # Changed to work_items_nested_dict here
+        )
+
+        summarize_chain = LLMChain(llm=llm, prompt=summarize_prompt)
+        summary = summarize_chain.run(work_items=work_items_text)
+
+
+
+        # Step 2: Format Release Notes with a Given Format
+        format_prompt = PromptTemplate(
+            input_variables=["summary", "format"],
+            template=summarize_prompt_text
+        )
+        format_chain = LLMChain(llm=llm, prompt=format_prompt)
+
+
+        release_notes = format_chain.run(summary=summary, format=release_notes_prompt_text)
+
+        return release_notes
+
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
