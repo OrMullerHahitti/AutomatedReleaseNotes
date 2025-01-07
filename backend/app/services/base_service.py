@@ -1,7 +1,9 @@
 # app/services/base_service.py
 from abc import ABC, abstractmethod
 from typing import List
-from app.models.models import *
+from ..models.models import *
+
+from backend.app.models.models import Sprint, WorkItem
 
 
 class BasePlatform(ABC):
