@@ -8,15 +8,15 @@ import logging
 from azure_authentication_client import authenticate_openai
 import openai
 authenticate_openai()
-from backend.app.services.llm_service import generate_doc
+from app.services.llm_service import generate_doc
 from typing import List
-from backend.app.models import Sprint
+from app.models.models import Sprint
 from langchain.chains.llm import LLMChain
 from langchain_core.prompts import PromptTemplate
 
-from ..services.llm_service import get_llm
-from backend.app.services.azure_devops_services import BasePlatform,AzureDevOpsService
-from backend.app.services.llm_service import generate_doc
+from app.services.llm_service import get_llm
+from app.services.azure_devops_services import BasePlatform,AzureDevOpsService
+from app.services.llm_service import generate_doc
 
 
 router = APIRouter(
@@ -34,6 +34,9 @@ async def generate_text(request: List[str] = Body(...,description="List of sprin
         work_items = await base.fetch_work_items(request)
 
         reposne_doc  = await generate_doc(work_items)
+
+    except(""
+           "")
 
 
 

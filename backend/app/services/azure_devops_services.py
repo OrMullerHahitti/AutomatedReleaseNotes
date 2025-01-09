@@ -5,7 +5,7 @@ from ..utils.requests import make_request
 from ..models.models import *
 from ..utils.config import *
 from ..utils.CustomLogger import CustomLogger
-from backend.app.models.base_service import BasePlatform
+from app.models.base_service import BasePlatform
 from datetime import datetime
 
 
@@ -74,6 +74,7 @@ class AzureDevOpsService(BasePlatform):
                         FROM WorkItems
                         WHERE [System.IterationPath] = '{azure_devops_project}\\{azure_devops_iteration_team}\\{sprint_name}'
                         AND [System.TeamProject] = '{azure_devops_project}'
+                        AND [System.State] = 'Closed'
                         ORDER BY [System.Id]
                     """
                 }
@@ -87,7 +88,7 @@ class AzureDevOpsService(BasePlatform):
 
                 # Fetch the work item identifiers
                 work_item_ids = [item['id'] for item in wiql_json_response['workItems']]
-                self.logger.info(f"detected {len(work_item_ids)} workitems for the following query: \n {wiql_query}")
+                self.logger.info(f"detected {len(work_item_ids)} CLOSED workitems for the following query: \n {wiql_query}")
 
 
 
@@ -130,6 +131,9 @@ class AzureDevOpsService(BasePlatform):
 
             # Run tasks concurrently using asyncio.gather
             all_work_items = await asyncio.gather(*tasks)
+
+            #TODO: resolve the duplicate issue
+            # all_work_item_unique = set(item.id for sprint_work_items in all_work_items for item in sprint_work_items)
 
             # Extract the work items from all sprints into a single list
             flat_work_items = [item for sprint_work_items in all_work_items for item in sprint_work_items]

@@ -7,8 +7,8 @@ from pydantic import BaseModel, Field
 from langchain.llms import OpenAI, HuggingFaceHub
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from backend.app.models.models import WorkItem
-from backend.app.utils.getters import get_llm
+from app.models.models import WorkItem
+from app.utils.getters import get_llm
 #from backend.app.utils.config import summarize_prompt_text, format_prompt_text, release_notes_prompt_text
 
 

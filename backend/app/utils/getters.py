@@ -4,7 +4,7 @@ from typing import List
 from azure_authentication_client import authenticate_openai
 from langchain.chat_models import AzureChatOpenAI
 from langchain.llms import OpenAI, HuggingFaceHub
-from backend.app.models.models import LLMConfig
+from app.models.models import LLMConfig
 
 #TODO: re-write LLMConfig in models.py
 
