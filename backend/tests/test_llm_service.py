@@ -123,7 +123,34 @@ with open("../logs/AI_response.txt" , 'w', encoding='utf-8') as AI_response:
 print("Completed.")
 from backend.app.services.generating_policies import DefaultGenerator
 
-deff = DefaultGenerator(llm)
+if __name__ == "__main__":
+    from azure_authentication_client import authenticate_openai
+    from langchain_openai import AzureChatOpenAI
+    from langchain.prompts import PromptTemplate
+    from backend.app.utils.useful_functions import format_work_items
+    from backend.app.models.base_service import BaseGenerator
+    from backend.app.services.azure_devops_services import AzureDevOpsService
+
+    import os
+
+    api_key = authenticate_openai().api_key
+    if not os.environ.get("AZURE_OPENAI_API_KEY"):
+        os.environ["AZURE_OPENAI_API_KEY"] = api_key
+
+    # from backend.app.utils.config import summarize_prompt_text, format_prompt_text, release_notes_prompt_text
+
+    api_key = authenticate_openai().api_key
+
+    llm1 = AzureChatOpenAI(deployment_name="gpt-4o-deployment",
+                          temperature=0.7,
+                          azure_endpoint='https://function-app-open-ai-prod-apim.azure-api.net/proxy-api/')
+    async def testing_one_two(language):
+        test_service = AzureDevOpsService()
+        work_items = await test_service.fetch_work_items("sprint 30")
+        work_items= format_work_items(work_items)
+        gen = DefaultGenerator(language)
+        response = await gen.generate_doc(work_items)
+    asyncio.run(testing_one_two(llm1))
 
 
 
