@@ -1,20 +1,13 @@
 
 from typing import List
 from azure_authentication_client import authenticate_openai
-from fastapi import FastAPI, HTTPException
 from langchain.chat_models import AzureChatOpenAI
-from pydantic import BaseModel, Field
-from langchain.llms import OpenAI, HuggingFaceHub
-from backend.app.models.base_service import BaseGenerator, BasePlatform
-from backend.app.models.models import WorkItem, Sprint
-from backend.app.models.generating_policies import DefaultGenerator
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from backend.app.models.base_service import BasePlatform
+from backend.app.services.generating_policies import DefaultGenerator
 
 from backend.app.models.base_service import BaseGenerator
-from backend.app.models.models import WorkItem, Sprint
 from backend.app.services.azure_devops_services import AzureDevOpsService
-from backend.app.utils.getters import get_llm
+
 #from backend.app.utils.config import summarize_prompt_text, format_prompt_text, release_notes_prompt_text
 
 

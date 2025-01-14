@@ -121,4 +121,9 @@ with open("../logs/AI_response.txt" , 'w', encoding='utf-8') as AI_response:
 
 
 print("Completed.")
+from backend.app.services.generating_policies import DefaultGenerator
+
+deff = DefaultGenerator(llm)
+
+
 

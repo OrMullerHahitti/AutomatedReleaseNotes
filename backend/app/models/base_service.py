@@ -1,9 +1,9 @@
 # app/services/base_service.py
 from abc import ABC, abstractmethod
 from typing import List
-from app.models.models import *
+from backend.app.models.models import *
 
-from app.models.models import Sprint, WorkItem
+from backend.app.models.models import Sprint, WorkItem
 
 
 class BasePlatform(ABC):
@@ -34,7 +34,7 @@ class BaseGenerator(ABC):
     def __init__(self):
         pass
     @abstractmethod
-    async def generate_doc(self, system_instructions: str,prompt:str, work_items: str):
+    async def generate_doc(self,prompt:str|List[str], work_items: str,system_instructions: str|None="",amount_of_invokes=1,save_memory=False)->LLMResponse:
         pass
 
 

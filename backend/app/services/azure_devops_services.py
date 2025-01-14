@@ -1,11 +1,11 @@
 import asyncio
 from typing import List
 from fastapi import HTTPException
-from ..utils.requests import make_request
-from ..models.models import *
-from ..utils.config import *
-from ..utils.CustomLogger import CustomLogger
-from app.models.base_service import BasePlatform
+from backend.app.utils.requests import make_request
+from backend.app.models.models import *
+from backend.app.utils.config import *
+from backend.app.utils.CustomLogger import CustomLogger
+from backend.app.models.base_service import BasePlatform
 from datetime import datetime
 
 

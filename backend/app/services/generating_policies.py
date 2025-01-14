@@ -18,6 +18,7 @@ class DefaultGenerator(BaseGenerator):
     '''
 
     def __init__(self, llm: Any) -> None:
+        ''':param llm: The LangChain LLM to use for generating release notes.'''
         super().__init__()
         self.llm = llm
 
@@ -68,8 +69,14 @@ class DefaultGenerator(BaseGenerator):
         doc.add_paragraph(response.content)
 
         # Save the document
-        doc.save(response.doc_name if none)
+        doc.save(response.doc_name if response.doc_name else "release_notes.docx")
         print(f"Release note saved to {response.doc_name}")
+
+class generate_with_iterations(BaseGenerator):
+    '''
+    Generator for release notes with multiple iterations.
+    '''
+    llm_with_structured_output = self.llm.with_structured_output(LLMResponse)
 
 
 #TODO for next models, classification of work items and generation of release notes, more complex logic will be added
