@@ -28,8 +28,13 @@ class BaseLLMService(ABC):
         pass
 
 class BaseGenerator(ABC):
+    '''
+    Base class for generating release notes
+    '''
+    def __init__(self):
+        pass
     @abstractmethod
-    async def generate_doc(self, work_items: List[str]|str,base_platfrom:BasePlatform) -> Document:
+    async def generate_doc(self, system_instructions: str,prompt:str, work_items: str):
         pass
 
 

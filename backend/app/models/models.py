@@ -2,7 +2,7 @@
 import datetime
 from pydantic import BaseModel,Field
 import datetime as dt
-from typing import Optional
+from typing import Optional, Annotated
 
 
 class DateRange(BaseModel):
@@ -23,9 +23,13 @@ class WorkItem(BaseModel):
     state: str
     # assigned_to: str
 
-class Document(BaseModel):
+class LLMResponse(BaseModel):
+    ''''Document to be made from the list of work items'''
+
+
+    doc_name:str|None=Field(default=None, alias="doc_name",description="name of document to be displayed",example="version_1.0.docx")
     title: str = Field(..., alias="title",description="title of document")
-    content: str = Field(..., alias="content",description="content of document")
+    content: str = Field(..., alias="content",description="the release notes content")
 
 class Sprint(BaseModel):
     id: str | None = Field(None, alias="id")

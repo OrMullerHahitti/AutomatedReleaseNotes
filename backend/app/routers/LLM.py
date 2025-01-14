@@ -26,16 +26,10 @@ router = APIRouter(
 work_items =[]
 logger = logging.getLogger(__name__)
 
-@router.post("/generate-release-notes", response_model=Document)
-async def generate_text(request: List[str] = Body(...,description="List of sprint names selected by the user"),base:BasePlatform=AzureDevOpsService()):
-    try:
-        #example dict:
+@router.post("/generate", response_model=Document)
+async def generate_text(sprints: List[str] = Body(...,description="List of sprint names selected by the user"),base:BasePlatform=AzureDevOpsService()):
 
-        work_items = await base.fetch_work_items(request)
-
-        reposne_doc  = await generate_doc(work_items)
-
-
+    doc = await generate_doc(sprints)
 
 
 
