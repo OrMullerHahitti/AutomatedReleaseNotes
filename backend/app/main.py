@@ -29,7 +29,7 @@ app.add_middleware(
 )
 
 # Include routers
-#app.include_router(generate.router)
+app.include_router(generate.router)
 
 @app.get("/")
 def read_root():

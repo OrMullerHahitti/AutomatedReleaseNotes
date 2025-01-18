@@ -10,13 +10,11 @@ import openai
 authenticate_openai()
 from backend.app.services.llm_service import generate_doc
 from typing import List
-from backend.app.models import Sprint
+
 from langchain.chains.llm import LLMChain
 from langchain_core.prompts import PromptTemplate
 
-from ..services.llm_service import get_llm
-from backend.app.services.azure_devops_services import BasePlatform,AzureDevOpsService
-from backend.app.services.llm_service import generate_doc
+
 
 
 router = APIRouter(

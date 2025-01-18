@@ -1,7 +1,7 @@
 
 import asyncio
-from app.services.azure_devops_services import AzureDevOpsService
-from app.utils.config import *
+from backend.app.services.azure_devops_services import AzureDevOpsService
+from backend.app.utils.config import *
 
 async def test1():
     azure_test = AzureDevOpsService()

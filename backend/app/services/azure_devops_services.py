@@ -1,7 +1,7 @@
 import asyncio
 from typing import List
 from fastapi import HTTPException
-from backend.app.utils.requests import make_request
+from backend.app.utils.useful_functions import make_request
 from backend.app.models.models import *
 from backend.app.utils.config import *
 from backend.app.utils.CustomLogger import CustomLogger

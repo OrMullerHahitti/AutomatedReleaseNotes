@@ -27,7 +27,7 @@ class LLMResponse(BaseModel):
     ''''Document to be made from the list of work items'''
 
 
-    doc_name:str|None=Field(default=None, alias="doc_name",description="name of document to be displayed",example="version_1.0.docx")
+    doc_name:str=Field(..., alias="doc_name",description="name of document to be displayed",example="version_1.0.docx")
     title: str = Field(..., alias="title",description="title of document")
     content: str = Field(..., alias="content",description="the release notes content")
 
