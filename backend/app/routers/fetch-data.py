@@ -2,8 +2,8 @@ from typing import List,Annotated
 
 from fastapi import APIRouter,HTTPException,Query, Path
 
-from app.models.models import Sprint, WorkItem
-from app.services.azure_devops_services import AzureDevOpsService
+from backend.app.models.models import Sprint, WorkItem
+from backend.app.services.azure_devops_services import AzureDevOpsService
 
 router = APIRouter()
 
