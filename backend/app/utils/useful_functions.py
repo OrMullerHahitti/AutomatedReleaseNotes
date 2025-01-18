@@ -4,7 +4,7 @@ import httpx
 from azure_authentication_client import authenticate_openai
 from langchain_openai import AzureChatOpenAI
 from backend.app.models.models import WorkItem
-
+from bs4 import BeautifulSoup
 
 def format_work_items(work_items:List[WorkItem]):
     return "\n".join(f"- {item.title}: {item.description} (Type: {item.type}, State: {item.state} , {item.id})"

@@ -7,6 +7,7 @@ from backend.app.utils.config import *
 from backend.app.utils.CustomLogger import CustomLogger
 from backend.app.models.base_service import BasePlatform
 from datetime import datetime
+from backend.app.utils.useful_functions import parse_html
 
 
 class AzureDevOpsService(BasePlatform):
@@ -105,7 +106,7 @@ class AzureDevOpsService(BasePlatform):
                     title = work_item['fields']['System.Title']
                     item_type = work_item['fields']['System.WorkItemType']
                     state = work_item['fields']['System.State']
-                    description = work_item['fields'].get('System.Description', '')
+                    description = parse_html(work_item['fields'].get('System.Description', ''))
 
                     # Append the work item to the list
                     item_to_add = WorkItem(id=item_id, title=title, type=item_type, state=state, description=description)
