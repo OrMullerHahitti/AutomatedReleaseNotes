@@ -1,8 +1,9 @@
 
 import datetime
+
 from pydantic import BaseModel,Field
 import datetime as dt
-from typing import Optional, Annotated
+from typing import Optional, Annotated, List
 
 
 class DateRange(BaseModel):
@@ -42,6 +43,14 @@ class LLMconfig(BaseModel):
     temperature: float
     api_key: str
     endpoint: str|None=None
+
+#TODO: insert the correct description rules.
+class TopicStructured(BaseModel):
+    new_feature: List[str] = Field(..., alias="new_feature",description="any new feautre")
+    improvement: List[str] = Field(..., alias="improvement",description="improvements in the existing product")
+    bug_fixes: List[str] = Field(..., alias="bug_fixes" , description="anything related to bugs")
+    test: List[str] = Field(..., alias="test" , description="anything related to tests")
+    n_a: List[str] = Field(..., alias="n_a", description = "all other options + internal things")
 
 
 

@@ -1,3 +1,6 @@
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+
+
 class system_insturctions:
     system_one :str = "you are a proffessional releasse note expert with highly skilled in writing release notes"
     system_two:str = '''Act as a technical writer. you will write release notes for the input data below.'
@@ -14,3 +17,7 @@ class examples:
     example_one:str = "this is an example of a release note: 'Fixed a bug where the user could not log in'"
     example_two:str = "this is an example of a release note: 'Fixed a bug where the user could not log in'"
     example_three:str = "this is an example of a release note: 'Fixed a bug where the user could not log in'"
+
+
+class prompt_templates:
+    tagging_base_prompt :str = "Tag the data into structured categories. Provide the output as tjhe structure probided with values as the relevant work items."
