@@ -21,3 +21,4 @@ class examples:
 
 class prompt_templates:
     tagging_base_prompt :str = "Tag the data into structured categories. Provide the output as tjhe structure probided with values as the relevant work items."
+    prompt_two:str = "you can write another prompt here and try it out"

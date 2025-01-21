@@ -52,7 +52,7 @@ class BaseClassifer(Classifier):
         #         {"input": RunnablePassthrough()}
         #         | self.template
         #         | llm_structured
-
+        #TODO prompy_templates.tagging_base_prompt is in the llm plugs you can change it there and just run the module
         return await llm_structured.ainvoke(f'{prompt_templates.tagging_base_prompt} use this text :{self.text}')
 
 

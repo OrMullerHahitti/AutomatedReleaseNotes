@@ -9,7 +9,15 @@ from backend.app.models.base_service import BaseGenerator
 from backend.app.models.models import WorkItem, TopicStructured
 from backend.app.services.llm_services.llm_plugs.prompts import *
 from backend.app.services.llm_services.llm_plugs import *
+from backend.app.models.base_service import BaseGenerator
 
+
+class DefaultGenerator(BaseGenerator):
+    async def generate_release_notes(self, llm, work_items):
+        """
+        Generate release notes from a list of WorkItems using the provided LLM.
+        """
+        return llm.generate_response(work_items)
 class SummarizeGenerator(BaseGenerator):
     ''' Default generator for release notes.
      This generator uses LangChain to generate release notes based on a list of work items.
