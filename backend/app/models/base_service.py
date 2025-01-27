@@ -71,22 +71,25 @@ class BaseGenerator(ABC):
 
 
 
-#TODO: make it abstract , support different
+#TODO: Advise with OR: is it generic enough?
+#TODO: what will be stored - txt or docx?
+#TODO: what will be the correct parameters for the functions , and return types?
+
 class BaseStorage(ABC):
 
     def __init__(self,secrets):
         self.secrets = secrets # password for auth
 
     @abstractmethod
-    async def save_file(self, doc: str):
+    async def save_file(self, content: str , title: str) -> bool:
         """
+        Convert LLM response to structured text (????)
         Save the given Document object into the database or storage system.
-        Save as text (str) to make it compatible for different DBs!!!!
         """
         pass
 
     @abstractmethod
-    async def fetch_file(self , signature: str):
+    async def fetch_file(self , signature: str) -> Document:
         """
         Fetch a file (Document object) from the storage system.
         signature = file name string to look for
