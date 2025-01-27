@@ -5,12 +5,15 @@ from azure_authentication_client import authenticate_openai
 from langchain_openai import AzureChatOpenAI
 from backend.app.models.models import WorkItem
 from bs4 import BeautifulSoup
+from docx import Document
 
 def format_work_items(work_items:List[WorkItem]):
     return "\n".join(f"- {item.title}: {item.description} (Type: {item.type}, State: {item.state} , {item.id})"
                      for item in work_items)
 
-
+def format_work_items_light(work_items:List[WorkItem]):
+    return "\n".join(f"{item.title}"
+                     for item in work_items)
 
 async def make_request(url: str, method: str = 'POST', headers: dict = None, data: dict = None):
     """
@@ -51,3 +54,46 @@ def get_azure_llm():
 def parse_html(html_string: str) -> str:
     soup = BeautifulSoup(html_string, 'html.parser')
     return soup.get_text()
+
+
+
+def convert_text_to_docx(title: str , content: str) -> Document:
+
+    """
+        Converts the given text content into a Word document with a title and content.
+
+        Args:
+        - title (str): The title of the document.
+        - content (str): The content to be included in the document.
+
+        Returns:
+        - Document: A python-docx Document object containing the title and content.
+    """
+    doc = Document()
+    doc.add_heading(title, level=1) # Add the title
+    doc.add_paragraph(content) # Add the generated release note content
+    return doc
+
+
+def convert_docx_to_text(doc: Document) -> str:
+    """
+        Extracts all text from the given Document object.
+
+        Args:
+        - doc (Document): The Document object to extract text from.
+
+        Returns:
+        - str: The extracted text as a single string.
+        """
+    # Initialize an empty string to hold all text
+    full_text = []
+
+    # Loop through all paragraphs in the document
+    for para in doc.paragraphs:
+
+        full_text.append(para.text)
+
+    # Join all the paragraphs into one string
+    document_text = '\n'.join(full_text)
+
+    return document_text

@@ -69,3 +69,27 @@ class BaseGenerator(ABC):
         pass
 
 
+
+
+#TODO: make it abstract , support different
+class BaseStorage(ABC):
+
+    def __init__(self,secrets):
+        self.secrets = secrets # password for auth
+
+    @abstractmethod
+    async def save_file(self, doc: str):
+        """
+        Save the given Document object into the database or storage system.
+        Save as text (str) to make it compatible for different DBs!!!!
+        """
+        pass
+
+    @abstractmethod
+    async def fetch_file(self , signature: str):
+        """
+        Fetch a file (Document object) from the storage system.
+        signature = file name string to look for
+        """
+        pass
+
