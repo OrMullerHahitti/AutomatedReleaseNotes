@@ -18,8 +18,9 @@ class SharePoint_Storage_Service(BaseStorage):
         super().__init__(secrets)
         self.site_url = site_url # sharepoint url , i.e. https://yourdomain.sharepoint.com/sites/yoursite
         self.folder_url = folder_url # "/sites/yoursite/Shared Documents/Folder"
-        self.context = ClientContext(site_url).with_credentials(secrets) #Conncetion object, "Client"
+        self.context = ClientContext(site_url).with_credentials(secrets['username'], secrets['password']) #Conncetion object, "Client"
         self.folder = self.context.web.get_folder_by_server_relative_url(folder_url)
+        print("success")
 
 
     async def save_file(self, content: str , title: str) -> bool:
