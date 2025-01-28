@@ -35,8 +35,12 @@ def build_paragraph_chain(llm_pointer, use_memory: bool = False) -> LLMChain:
         input_variables=["work_items", "topic_name"],
     )
 
-    memory = ConversationBufferMemory() if use_memory else None
-
+    memory = ConversationBufferMemory(
+        # By default, it expects just one input key.
+        # You can specify which input key to focus on, for example:
+        input_key="work_items",  # or "topic_name"
+        return_messages=True
+    ) if use_memory else None
     llm_chain = LLMChain(
         llm=llm_pointer,
         prompt=prompt_template,
@@ -52,11 +56,16 @@ def build_final_assembly_chain(llm_pointer,example_final_doc,use_memory: bool = 
     prompt_str = FinalAssembly.prompt_one.replace("{example_final_docs}", example_final_doc)
 
     prompt_template = PromptTemplate(
-        template=FinalAssembly.prompt_one,
+        template=prompt_str,
         input_variables=["paragraphs", "system_instructions"],
     )
 
-    memory = ConversationBufferMemory() if use_memory else None
+    memory = ConversationBufferMemory(
+        # By default, it expects just one input key.
+        # You can specify which input key to focus on, for example:
+        input_key="paragraphs",  # or "topic_name"
+        return_messages=True
+    ) if use_memory else None
 
     final_chain = LLMChain(
         llm=llm_pointer,
@@ -93,7 +102,7 @@ async def generate_release_notes_paragraphs(
     paragraph_examples_str = "\n".join([f"Example Paragraph {i+1}: {ex}" for i, ex in enumerate(example_outputs)])
 
     # Step 6: Assemble final doc
-    final_chain = build_final_assembly_chain(paragraph_examples_str, use_memory)
+    final_chain = build_final_assembly_chain(llm,paragraph_examples_str, use_memory)
 
     # Combine system instructions into a single string
     system_instructions_str = "\n".join(system_instructions)
