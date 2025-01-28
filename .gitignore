@@ -6,3 +6,6 @@
 /backend/aiAPIcheck.py
 /backend/app/logs/
 **/azure_token_cache.bin
+/backend/logs/app.log
+/.idea/httpRequests/http-client.cookies
+/.idea/httpRequests/http-requests-log.http
