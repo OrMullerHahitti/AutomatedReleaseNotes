@@ -62,7 +62,7 @@ class BaseGenerator(ABC):
         return release_notes
 
     @abstractmethod
-    async def generate_release_notes(self,llm,  work_items: str) -> LLMResponse:
+    async def generate_release_notes(self,llm,  work_items: str) -> str:
         """
         Generate release notes from a list of WorkItems using the provided LLM.
         """

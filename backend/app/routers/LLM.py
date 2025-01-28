@@ -10,7 +10,7 @@ import openai
 authenticate_openai()
 from backend.app.services.llm_service import generate_doc
 from typing import List
-
+from backend.app.services.llm_services.main_function import generate_doc
 from langchain.chains.llm import LLMChain
 from langchain_core.prompts import PromptTemplate
 
@@ -21,7 +21,7 @@ router = APIRouter(
 work_items =[]
 logger = logging.getLogger(__name__)
 
-@router.post("/generate", response_model=Document)
+@router.post("/generate", response_model=LLMResponse)
 async def generate_text(sprints: List[str] = Body(...,description="List of sprint names selected by the user"),base:BasePlatform=AzureDevOpsService()):
 
     doc = await generate_doc(sprints)

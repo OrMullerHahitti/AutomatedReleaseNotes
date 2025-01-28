@@ -17,7 +17,7 @@ from backend.app.utils.useful_functions import get_azure_llm, format_work_items
 
 
 class Classifier(ABC):
-    def __init__(self,llm,text:str,template:PromptTemplate=prompt_templates.tagging_prompt_default):
+    def __init__(self,llm,text:str,template:PromptTemplate=prompt_templates.tagging_base_prompt):
         '''
 
         :param llm: a valid llm pointer
@@ -34,7 +34,7 @@ class Classifier(ABC):
 
 
 class BaseClassifer(Classifier):
-    def __init__(self, llm, text: str, template: PromptTemplate = prompt_templates.tagging_prompt_default):
+    def __init__(self, llm, text: str, template: PromptTemplate = prompt_templates.tagging_base_prompt):
         super().__init__(llm, text, template)
 
     async def classify(self):

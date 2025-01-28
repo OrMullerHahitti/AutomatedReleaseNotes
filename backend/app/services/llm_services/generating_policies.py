@@ -7,9 +7,13 @@ from langchain.memory import ConversationBufferMemory
 
 from backend.app.models.base_service import BaseGenerator
 from backend.app.models.models import WorkItem, TopicStructured
+from backend.app.services.llm_services.Classifiers import BaseClassifer
 from backend.app.services.llm_services.llm_plugs.prompts import *
 from backend.app.services.llm_services.llm_plugs import *
 from backend.app.models.base_service import BaseGenerator
+from backend.app.services.llm_services.llm_utils import generate_release_notes_paragraphs
+from backend.app.utils.useful_functions import format_work_items
+from backend.app.services.llm_services.llm_plugs.prompts import paragraph_examples as example_outputs
 
 
 class DefaultGenerator(BaseGenerator):
@@ -18,27 +22,16 @@ class DefaultGenerator(BaseGenerator):
         Generate release notes from a list of WorkItems using the provided LLM.
         """
         return llm.generate_response(work_items)
-class SummarizeGenerator(BaseGenerator):
+class BasicGenerator(BaseGenerator):
     ''' Default generator for release notes.
      This generator uses LangChain to generate release notes based on a list of work items.
      The release notes are generated using a structured JSON output that includes the title, doc name, and content.
     '''
-    def __init__(self,llm,system_instructions:str,summarize_format:str):
+    def __init__(self,llm):
         super().__init__(llm)
-        self.system_instructions=system_instructions
-        self.summarize_prompt=summarize_format
-        # Create a prompt template that specifies the output should be in JSON format
-        self.init_prompt_summary = PromptTemplate(
-            input_variables=["input"],
-            template=(
-
-                "here is what you should use: List of work items:\n{work_items}\n"
-                "create a summary of the items that will later be used for release note genereation"
-            )
-        )
 
 
-    async def generate_release_notes(self,llm, work_items: List[WorkItem]) :
+    async def generate_release_notes(self,llm, work_items: str) :
         """
            Creates a DOCX release note using LangChain and OpenAI.
            Automatically generates the title, doc name, and release note content from structured JSON output.
@@ -47,22 +40,10 @@ class SummarizeGenerator(BaseGenerator):
            :param prompt_format: The format of the prompt to provide structured JSON output.
            :param work_items: A long string containing the list of work items.
            """
-        release_note_prompt = PromptTemplate(
-            input_variables=["summary"],
-            template="Write a release Notes for this summary: {summary}",
-        )
-
-        summary_chain = LLMChain(llm=self.llm, prompt=self.init_prompt_summary)
-
-        release_note_chain = LLMChain(llm=self.llm, prompt=release_note_prompt)
-
-        overall_chain = SimpleSequentialChain(chains=[summary_chain, release_note_chain])
-
-        release_notes_before_structure =  overall_chain.invoke({"input":f'{work_items}'})
-        llm = llm.with_structured_output(TopicStructured)
-        formatted_from_example = llm.invoke(f'{release_notes_before_structure["output"]} this is your input. format it to match this example :{default_prompt_format}')
-
-        return formatted_from_example
+        classifier = BaseClassifer(llm, work_items)
+        topics = await classifier.classify()
+        rn_content = await generate_release_notes_paragraphs(llm,topic_data=topics,system_instructions=[system_insturctions.system_two],example_outputs=example_outputs)
+        return rn_content
 
 
 class LabelingGeneratorWithPredefinedClasses(BaseGenerator):
@@ -147,10 +128,12 @@ if __name__ == "__main__":
                           azure_endpoint='https://function-app-open-ai-prod-apim.azure-api.net/proxy-api/')
     async def testing_one_two(language):
         test_service = AzureDevOpsService()
-        work_items = await test_service.fetch_work_items_for_multiple_sprints(["sprint 30"])
-        gen = LabelingGenerator(language,system_instructions=system_insturctions.system_two,labeling_format="")
+        work_items = await test_service.fetch_work_items_for_multiple_sprints(["Sprint 30", "Sprint 31"])
+        gen = BasicGenerator(llm1)
         response = await gen.generate(work_items)
+        print(response)
     asyncio.run(testing_one_two(llm1))
+    print("hold")
 
 
 
