@@ -8,26 +8,41 @@ from office365.runtime.auth.user_credential import UserCredential
 from docx import Document
 
 
-#TODO: tell Or - it is better LLM will return text and here will be the DOCX formation, for consistency and abstract
-
 class SharePointStorageService(BaseStorage):
+    """
+    A service to interact with SharePoint for storing and retrieving Word documents.
+    This class allows saving text as a .docx file and fetching the content of an existing .docx file from SharePoint.
+    """
 
     def __init__(self, site_url: str , folder_path: str, secrets: dict):
+        """
+        Initializes the SharePointStorageService with site URL, folder path, and credentials.
+
+        Args:
+            site_url (str): The SharePoint site URL. example: "https://<tenant-id>/sites/<site-name>"
+            folder_path (str): The folder path relative to the site where the files are stored. example: "/sites/<site-name>/Shared Documents/<folder-name>"
+            secrets (dict): Dictionary containing user credentials (username and password in plain text).
+        """
+        # TODO: use scalable & secure authentication - Lior
         super().__init__(secrets)
         self.site_url = site_url
         self.folder_path = folder_path
-        self.userCredentials = user_credentials = UserCredential(f'{secrets["username"]}',f'{secrets["password"]}')
+        self.userCredentials = UserCredential(secrets["username"],secrets["password"])
         self.context = ClientContext(site_url).with_credentials(self.userCredentials) #Conncetion object, "Client"
         self.folder = self.context.web.get_folder_by_server_relative_url(folder_path)
 
 
     def save_file(self, file_name: str,title: str,  content: str) -> bool:
         """
-                Convert the text to docx format and upload to SharePoint.
+       Converts the text content to a .docx file and uploads it to SharePoint.
 
-                Args:
-                - doc (str): Text content of the document.
-                - file_name (str): The name of the file to be saved (e.g., "document.docx").
+       Args:
+           file_name (str): The desired name of the file (without extension).
+           title (str): The title to be used in the document.
+           content (str): The text content to be converted to a .docx file.
+
+       Returns:
+           bool: True iff the file was successfully uploaded
         """
         try:
 
@@ -51,11 +66,17 @@ class SharePointStorageService(BaseStorage):
             raise HTTPException(status_code=500, detail=f"Failed to save file into DB: {str(e)}")
 
 
-
-    def fetch_file(self , signature: str) -> str:
+    #TODO: determine a file name schema to ensure its unique - Or
+    def fetch_file(self , signature: str) -> Document:
         """
-            Given a unique file name , a.k.a "signature",
-            this function returns the contents of an existing file.
+        Retrieves a file from SharePoint based on its signature (file name).
+        for example: "test123.docx".
+
+        Args:
+            signature (str): The unique file name (signature) to identify the file on SharePoint.
+
+        Returns:
+            Document: A docx Document object containing the file's content.
         """
         try:
             # Get the file from SharePoint
@@ -67,14 +88,11 @@ class SharePointStorageService(BaseStorage):
             file_content = file.read()
 
             # Convert the byte content to a docx Document object
-            byte_stream = BytesIO(file_content)
-            byte_stream.seek(0)
+            byte_stream = BytesIO(file_content) # convert bytes to byte_stream
+            byte_stream.seek(0) # Rewind the stream to the beginning
+            doc = Document(byte_stream) # build the .docx object
 
-            doc = Document(byte_stream)
-
-            output = convert_docx_to_text(doc)
-            print("Output is: " + output)
-            return output
+            return doc
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to fetch file from DB: {str(e)}")

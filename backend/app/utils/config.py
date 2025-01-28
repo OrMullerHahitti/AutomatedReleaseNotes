@@ -26,6 +26,10 @@ authentication_headers_azure = {
 log_directory_path = os.getenv('LOG_DIRECTORY_PATH')
 log_file_name = os.getenv('LOG_FILE_NAME')
 logging_level = os.getenv('LOGGING_LEVEL')
+sharepoint_site = os.getenv("SHAREPOINT_SITE")
+sharepoint_folder = os.getenv("SHAREPOINT_FOLDER")
+sharepoint_username = os.getenv("SHAREPOINT_USERNAME")
+sharepoint_password = os.getenv("SHAREPOINT_PASSWORD")
 
 
 # # Load prompts from JSON config
