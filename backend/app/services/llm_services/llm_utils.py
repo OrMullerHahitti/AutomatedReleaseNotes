@@ -84,7 +84,7 @@ async def generate_release_notes_paragraphs(
     use_memory: bool = False
 ) -> LLMResponse:
     """
-    Generates the final LLMResponse (release notes) using a multi-step or single-step approach.
+    Generates the final LLMResponse (release notes) using a multi-step approach. given a list of work items in a topic structure.
     """
 
     # Convert the list of work items into a string (for example)
@@ -107,12 +107,14 @@ async def generate_release_notes_paragraphs(
     # Combine system instructions into a single string
     system_instructions_str = "\n".join(system_instructions)
 
-    paragraphs_str = "\n".join(paragraphs)
+    paragraphs_str = "\n".join(paragraphs['text'] for paragraphs in paragraphs)
 
-    final_response = await final_chain.ainvoke(
-        paragraphs=paragraphs_str,
-        system_instructions=system_instructions_str
+    final_response = await final_chain.ainvoke(input={
+        "paragraphs":paragraphs_str,
+        "system_instructions":system_instructions_str
+    }
     )
     return final_response
+# if __name__ == "__main__":
 
 

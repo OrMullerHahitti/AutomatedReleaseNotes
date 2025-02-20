@@ -39,16 +39,18 @@ Output:
 A single paragraph describing the {topic_name}.
 """
 class FinalAssembly:
-    prompt_one:str = """We have these paragraphs from previous steps:
-{{paragraphs}}
+    prompt_one:str = """ you are an helpful assistant who is specializing in creating a release note documents concerning both technological and business aspects.
+We have these paragraphs from previous steps:
+{paragraphs}, each paragraph focusing on a specific topic.
 
 Below are some example final documents (in JSON format) demonstrating the output style:
 {example_final_docs}
+do not overfit to the examples! but use them as general guidelines
 
 Now assemble them into a cohesive release notes document.
 
 System instructions:
-{{system_instructions}}
+{system_instructions}
 
 Output must be a JSON with keys doc_name, title, and content. Title is a short summary, doc_name is the version doc name, and content is the actual text.
 Use the following format:

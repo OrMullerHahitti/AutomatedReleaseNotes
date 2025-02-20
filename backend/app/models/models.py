@@ -46,11 +46,11 @@ class LLMconfig(BaseModel):
 
 #TODO: insert the correct description rules.
 class TopicStructured(BaseModel):
-    new_feature: List[str] = Field(..., alias="new_feature",description="any new feautre")
-    improvement: List[str] = Field(..., alias="improvement",description="improvements in the existing product")
-    bug_fixes: List[str] = Field(..., alias="bug_fixes" , description="anything related to bugs")
-    test: List[str] = Field(..., alias="test" , description="anything related to tests")
-    n_a: List[str] = Field(..., alias="n_a", description = "all other options + internal things")
+    new_feature: List[str] = Field(default=None, alias="new_feature",description="any new feautre")
+    improvement: List[str] = Field(default=None, alias="improvement",description="improvements in the existing product")
+    bug_fixes: List[str] = Field(default=None, alias="bug_fixes" , description="anything related to bugs")
+    test: List[str] = Field(default=None, alias="test" , description="anything related to tests")
+    n_a: List[str] = Field(default=None, alias="n_a", description = "all other options + internal things")
 
 
 
