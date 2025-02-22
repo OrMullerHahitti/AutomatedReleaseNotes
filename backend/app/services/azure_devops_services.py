@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from backend.app.utils.useful_functions import make_request
 from backend.app.models.models import *
 from backend.app.utils.config import *
-from backend.app.utils.CustomLogger import CustomLogger
+# from backend.app.utils.CustomLogger import CustomLogger
 from backend.app.models.base_service import BasePlatform
 from datetime import datetime
 from backend.app.utils.useful_functions import parse_html
@@ -14,12 +14,12 @@ class AzureDevOpsService(BasePlatform):
 
     def __init__(self):
         super().__init__(authentication_headers_azure)
-        self.logger = CustomLogger(log_directory_path,log_file_name,
-                                   logging_level).get_logger()
+        # self.logger = CustomLogger(log_directory_path,log_file_name,
+        #                            logging_level).get_logger()
 
     async def fetch_sprints(self) -> List[Sprint]:
         try:
-            self.logger.info("fetching sprints from Azure Devops")
+            # self.logger.info("fetching sprints from Azure Devops")
             base_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/{azure_devops_team}/_apis/work/teamsettings/iterations?api-version=7.1'
             response = await make_request(url=base_url, method='GET', headers=self.auth_headers)
             sprints_data = response.json()
@@ -49,12 +49,12 @@ class AzureDevOpsService(BasePlatform):
                 )
                 sprints.append(sprint)
 
-            self.logger.info(f"Successfully fetched {len(sprints)} sprints.")
+            # self.logger.info(f"Successfully fetched {len(sprints)} sprints.")
             return sprints
 
 
         except Exception as e:
-            self.logger.error(f"Failed to fetch sprints: {str(e)}")
+            # self.logger.error(f"Failed to fetch sprints: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Failed to fetch_sprints: {str(e)}")
 
 # from backend.app.models.models import WorkItem, Sprint
@@ -68,7 +68,7 @@ class AzureDevOpsService(BasePlatform):
                 # Step 1: Extract the work item ids relevant to the input sprint
 
                 # Define WIQL query to fetch all work items for the sprint
-                self.logger.info(f"Fetching work items for sprint '{sprint_name}'.")
+                # self.logger.info(f"Fetching work items for sprint '{sprint_name}'.")
                 wiql_query = {
                     "query": f"""
                         SELECT [System.Id], [System.WorkItemType]
@@ -89,7 +89,7 @@ class AzureDevOpsService(BasePlatform):
 
                 # Fetch the work item identifiers
                 work_item_ids = [item['id'] for item in wiql_json_response['workItems']]
-                self.logger.info(f"detected {len(work_item_ids)} CLOSED workitems for the following query: \n {wiql_query}")
+                # self.logger.info(f"detected {len(work_item_ids)} CLOSED workitems for the following query: \n {wiql_query}")
 
 
 
@@ -97,7 +97,7 @@ class AzureDevOpsService(BasePlatform):
                 work_item_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/wit/workitems?ids={",".join(map(str, work_item_ids))}&api-version=7.1'
                 work_item_response = await make_request(url=work_item_url, method='GET', headers=self.auth_headers)
                 work_item_data = work_item_response.json()
-                self.logger.info(f"Successfully fetched {len(work_item_data['value'])} work items for sprint '{sprint_name}'.")
+                # self.logger.info(f"Successfully fetched {len(work_item_data['value'])} work items for sprint '{sprint_name}'.")
 
                 # Step 3: Map the response to the WorkItem model
                 work_items = []
@@ -111,13 +111,13 @@ class AzureDevOpsService(BasePlatform):
                     # Append the work item to the list
                     item_to_add = WorkItem(id=item_id, title=title, type=item_type, state=state, description=description)
                     work_items.append(item_to_add)
-                    self.logger.info(f"added: {item_to_add}")
+                    # self.logger.info(f"added: {item_to_add}")
 
                 return work_items
 
 
             except Exception as e:
-                self.logger.error(f"Failed to fetch work items for sprint '{sprint_name}': {str(e)}")
+                # self.logger.error(f"Failed to fetch work items for sprint '{sprint_name}': {str(e)}")
                 raise HTTPException(status_code=500, detail=f"Failed to fetch_work_items: {str(e)}")
 
 
@@ -138,10 +138,10 @@ class AzureDevOpsService(BasePlatform):
 
             # Extract the work items from all sprints into a single list
             flat_work_items = [item for sprint_work_items in all_work_items for item in sprint_work_items]
-            self.logger.info(f"Successfully fetched {len(flat_work_items)} work items from {len(sprint_names)} sprints.")
+            # self.logger.info(f"Successfully fetched {len(flat_work_items)} work items from {len(sprint_names)} sprints.")
 
             return flat_work_items
 
         except Exception as e:
-            self.logger.error(f"Failed to fetch work items for multiple sprints: {str(e)}")
+            # self.logger.error(f"Failed to fetch work items for multiple sprints: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Failed to fetch_work_items for multiple sprints: {str(e)}")

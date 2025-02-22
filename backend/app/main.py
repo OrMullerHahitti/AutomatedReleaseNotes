@@ -1,14 +1,18 @@
-# backend/app/main.py
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import LLM
 import logging
-from app.models.LLM import WorkItemsRequest
-from app.services.azure_devops_services import *
 
-app = FastAPI(
-)
+from fastapi.params import Depends
+from backend.app.routers.endpoints import router
+from backend.app.services.azure_devops_services import AzureDevOpsService
+from backend.app.services.storage_services import SharePointStorageService
+from backend.app.utils.config import sharepoint_site, sharepoint_folder, sharepoint_username, sharepoint_password
+
+# SETUP
+app = FastAPI()
+platform = AzureDevOpsService()
+# database = SharePointStorageService(sharepoint_site, sharepoint_folder,
+#                                     {"username": sharepoint_username, "password": sharepoint_password})
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -20,6 +24,7 @@ origins = [
     "https://your-frontend-domain.com"  # Frontend in production
 ]
 
+# Instantiate the CORSMiddleware class
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -29,9 +34,8 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(generate.router)
+app.include_router(router, dependencies=[Depends(lambda: platform)])
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Automated Release Notes Generator API"}
-
