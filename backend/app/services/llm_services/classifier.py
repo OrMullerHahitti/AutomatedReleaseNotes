@@ -70,7 +70,6 @@ class BaseClassifer(Classifier):
             partial_variables={"format_instructions": parser.get_format_instructions()}
         )
 
-        from langchain_core.pydantic_v1 import BaseModel, Field, validator
         chain = prompt_template|self.llm|parser
 
         #TODO prompy_templates.tagging_base_prompt is in the llm plugs you can change it there and just run the module

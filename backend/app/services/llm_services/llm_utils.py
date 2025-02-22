@@ -64,7 +64,7 @@ def build_final_assembly_chain(llm_pointer,example_final_doc,use_memory: bool = 
         # By default, it expects just one input key.
         # You can specify which input key to focus on, for example:
         input_key="paragraphs",  # or "topic_name"
-        return_messages=True
+        return_messages=False #for now might be changed later
     ) if use_memory else None
 
     final_chain = LLMChain(

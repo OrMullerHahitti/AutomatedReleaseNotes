@@ -73,7 +73,17 @@ def convert_text_to_docx(title: str , content: str) -> Document:
     doc.add_heading(title, level=1) # Add the title
     doc.add_paragraph(content) # Add the generated release note content
     return doc
+import pickle
 
+def save_object_to_pickle(data, filename):
+    """Saves a dictionary to a pickle file."""
+    with open(filename, 'wb') as f:  # 'wb' for binary write
+        pickle.dump(data, f)
+
+def load_dict_from_pickle(filename):
+    """Loads a dictionary from a pickle file."""
+    with open(filename, 'rb') as f:  # 'rb' for binary read
+        return pickle.load(f)
 
 def convert_docx_to_text(doc: Document) -> str:
     """
