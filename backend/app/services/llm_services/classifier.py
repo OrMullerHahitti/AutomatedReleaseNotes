@@ -11,7 +11,8 @@ from backend.app.services.azure_devops_services import AzureDevOpsService
 from backend.app.services.llm_services.llm_plugs.prompts import prompt_templates
 from langchain_core.prompts import PromptTemplate
 from backend.app.services.llm_services.llm_plugs.prompts import *
-
+from langchain.output_parsers import PydanticOutputParser
+from langchain_core.prompts import PromptTemplate
 from backend.app.models.models import TopicStructured
 from backend.app.utils.useful_functions import get_azure_llm, format_work_items
 
@@ -48,8 +49,7 @@ class BaseClassifer(Classifier):
         """
         # Create a parser for TopicStructured
 
-        from langchain.output_parsers import PydanticOutputParser
-        from langchain_core.prompts import PromptTemplate
+
         parser = PydanticOutputParser(pydantic_object=TopicStructured)
 
         prompt_template = PromptTemplate(
@@ -61,7 +61,7 @@ class BaseClassifer(Classifier):
             Format the response strictly as JSON using this schema:
            {format_instructions}
 
-            Work Item:
+            Work Items:
             {work_items}
 
             Respond only with JSON.
@@ -70,7 +70,6 @@ class BaseClassifer(Classifier):
             partial_variables={"format_instructions": parser.get_format_instructions()}
         )
 
-        from langchain_core.pydantic_v1 import BaseModel, Field, validator
         chain = prompt_template|self.llm|parser
 
         #TODO prompy_templates.tagging_base_prompt is in the llm plugs you can change it there and just run the module

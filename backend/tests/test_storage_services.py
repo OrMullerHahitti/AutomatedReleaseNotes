@@ -2,6 +2,9 @@
 from backend.app.services.storage_services import SharePointStorageService
 from backend.app.utils.config import sharepoint_site, sharepoint_folder, sharepoint_username, sharepoint_password
 
+# "https://ts.accenture.com/sites/CoreTeam-SoftwareEngineering/Shared Documents/General/ARN/"
+
+
 def test():
     platform = SharePointStorageService(sharepoint_site, sharepoint_folder,
     {"username" : sharepoint_username, "password" : sharepoint_password})

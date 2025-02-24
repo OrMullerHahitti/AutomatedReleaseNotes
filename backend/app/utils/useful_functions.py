@@ -43,15 +43,15 @@ async def make_request(url: str, method: str = 'POST', headers: dict = None, dat
             raise ValueError(method)
         response.raise_for_status()
         return response
-
 def get_azure_llm():
     api_key = authenticate_openai().api_key
     if not os.environ.get("OPENAI_API_KEY"):
         os.environ["OPENAI_API_KEY"] = api_key
-        return AzureChatOpenAI(deployment_name="gpt-4o-deployment",
-                          temperature=0.7,
-                          azure_endpoint='https://function-app-open-ai-prod-apim.azure-api.net/proxy-api/')
-
+    return AzureChatOpenAI(
+        deployment_name="gpt-4o-deployment",
+        temperature=0.7,
+        azure_endpoint="https://function-app-open-ai-prod-apim.azure-api.net/proxy-api/"
+    )
 
 def parse_html(html_string: str) -> str:
     soup = BeautifulSoup(html_string, 'html.parser')
@@ -75,7 +75,17 @@ def convert_text_to_docx(title: str , content: str) -> Document:
     doc.add_heading(title, level=1) # Add the title
     doc.add_paragraph(content) # Add the generated release note content
     return doc
+import pickle
 
+def save_object_to_pickle(data, filename):
+    """Saves a dictionary to a pickle file."""
+    with open(filename, 'wb') as f:  # 'wb' for binary write
+        pickle.dump(data, f)
+
+def load_dict_from_pickle(filename):
+    """Loads a dictionary from a pickle file."""
+    with open(filename, 'rb') as f:  # 'rb' for binary read
+        return pickle.load(f)
 
 def convert_docx_to_text(doc: Document) -> str:
     """

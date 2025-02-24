@@ -8,9 +8,8 @@ from backend.app.services.azure_devops_services import AzureDevOpsService
 router = APIRouter()
 
 @router.get("/work-items", response_model=List[WorkItem])
-async def get_work_items(request:Annotated[List[str],Query(...,description="list of Sprints")] ):
+async def work_items(request:Annotated[List[str],Query(...,description="list of Sprints")] ):
     '''
-    
     Fetch work items (User Stories,Features,Tasks) from azure devops based on range
     '''
     work_items=[]
@@ -28,7 +27,7 @@ async def get_work_items(request:Annotated[List[str],Query(...,description="list
 
 
 @router.get("/sprints/" ,response_model=List[Sprint])
-async def get_sprints(platform : Annotated[str,Path("Azure",title="The platform we fetch from")]):
+async def sprints(platform : Annotated[str,Path("Azure",title="The platform we fetch from")]):
     '''
     
     Fetch sprints from azure devops

@@ -4,8 +4,16 @@ import os
 import base64
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
+
+# Get the absolute path of the directory where the config.py is located
+config_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the relative path to the .env file
+dotenv_path = os.path.join(config_dir, '../../.env')
+
+# Load the .env file
+load_dotenv(dotenv_path=dotenv_path)
+
 
 # Check if the environment variable is loaded properly
 print(os.getenv('AZURE_DEVOPS_TEAM'))  # Debugging line
