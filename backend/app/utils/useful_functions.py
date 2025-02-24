@@ -7,6 +7,8 @@ from backend.app.models.models import WorkItem
 from bs4 import BeautifulSoup
 from docx import Document
 
+
+
 def format_work_items(work_items:List[WorkItem]):
     return "\n".join(f"- {item.title}: {item.description} (Type: {item.type}, State: {item.state} , {item.id})"
                      for item in work_items)
@@ -34,7 +36,7 @@ async def make_request(url: str, method: str = 'POST', headers: dict = None, dat
     """
     async with httpx.AsyncClient() as client:
         if method == 'GET':
-            response = await client.get(url, headers=headers)
+            response = await client.get(url, headers=headers, follow_redirects=False)
         elif method == 'POST':
             response = await client.post(url, headers=headers, json=data)
         else:
@@ -97,3 +99,8 @@ def convert_docx_to_text(doc: Document) -> str:
     document_text = '\n'.join(full_text)
 
     return document_text
+
+
+
+
+

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:8000'; // set up the backend url globally
+axios.defaults.baseURL = 'http://127.0.0.1:8000'; // set up the backend url globally
 
 const ReleaseNotesGenerator = () => {
     const [sprints, setSprints] = useState([]);
@@ -14,7 +14,7 @@ const ReleaseNotesGenerator = () => {
     useEffect(() => {
         const fetchSprints = async () => {
             try {
-                const response = await axios.get( '/sprints/');
+                const response = await axios.get( '/sprints/', {maxRedirects : 0, });
                 setSprints(response.data); // assuming response.data is the list of sprints
             } catch (error) {
                 console.error('Error fetching sprints:', error);

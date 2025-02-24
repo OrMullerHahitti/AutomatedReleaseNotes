@@ -2,7 +2,6 @@ import logging
 import os
 
 
-
 class CustomLogger:
 
     def __init__(self, log_directory_path: str, log_file_name: str, logging_level: int):

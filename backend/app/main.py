@@ -1,18 +1,22 @@
+# In backend/app/main.py
+import asyncio
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
-
-from fastapi.params import Depends
 from backend.app.routers.endpoints import router
+from backend.app.utils.useful_functions import make_request
+from backend.app.utils.config import authentication_headers_azure
 from backend.app.services.azure_devops_services import AzureDevOpsService
-from backend.app.services.storage_services import SharePointStorageService
-from backend.app.utils.config import sharepoint_site, sharepoint_folder, sharepoint_username, sharepoint_password
+from backend.app.services.azure_devops_services import AzureDevOpsService
+from backend.app.utils.config import authentication_headers_azure
+
+
+# uvicorn backend.app.main:app --reload
+# uvicorn backend.app.main:app --reload --log-level debug
 
 # SETUP
 app = FastAPI()
-platform = AzureDevOpsService()
-# database = SharePointStorageService(sharepoint_site, sharepoint_folder,
-#                                     {"username": sharepoint_username, "password": sharepoint_password})
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -34,8 +38,24 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(router, dependencies=[Depends(lambda: platform)])
+app.include_router(router)
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Automated Release Notes Generator API"}
+
+
+
+# # Define the async function for testing
+# async def test_sprints():
+#     try:
+#         logger.info("Making a request to /sprints/")
+#         response = await make_request("http://127.0.0.1:8000/sprints/", "GET")
+#         logger.info(f"Status Code: {response.status_code}")
+#         logger.info(f"Response: {response.json()}")
+#     except Exception as e:
+#         logger.error(f"Error occurred: {e}")
+#
+# # Call the test_sprints function directly (for testing purposes)
+# asyncio.run(test_sprints())
+

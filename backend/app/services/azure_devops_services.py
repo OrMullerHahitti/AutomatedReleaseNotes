@@ -3,24 +3,34 @@ from typing import List
 from fastapi import HTTPException
 from backend.app.utils.useful_functions import make_request
 from backend.app.models.models import *
-from backend.app.utils.config import *
+# from backend.app.utils.config import *
 # from backend.app.utils.CustomLogger import CustomLogger
 from backend.app.models.base_service import BasePlatform
 from datetime import datetime
 from backend.app.utils.useful_functions import parse_html
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class AzureDevOpsService(BasePlatform):
 
-    def __init__(self):
-        super().__init__(authentication_headers_azure)
+    def __init__(self, auth_headers,azure_devops_org, azure_devops_project,
+                 azure_devops_team, azure_devops_iteration_team):
+        super().__init__(auth_headers)
+        self.azure_devops_org = azure_devops_org
+        self.azure_devops_project = azure_devops_project
+        self.azure_devops_team = azure_devops_team
+        self.azure_devops_iteration_team = azure_devops_iteration_team
+
         # self.logger = CustomLogger(log_directory_path,log_file_name,
         #                            logging_level).get_logger()
 
     async def fetch_sprints(self) -> List[Sprint]:
         try:
             # self.logger.info("fetching sprints from Azure Devops")
-            base_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/{azure_devops_team}/_apis/work/teamsettings/iterations?api-version=7.1'
+            base_url = f'https://dev.azure.com/{self.azure_devops_org}/{self.azure_devops_project}/{self.azure_devops_team}/_apis/work/teamsettings/iterations?api-version=7.1'
+            logger.info("base url is: " + base_url)
             response = await make_request(url=base_url, method='GET', headers=self.auth_headers)
             sprints_data = response.json()
 
@@ -58,7 +68,7 @@ class AzureDevOpsService(BasePlatform):
             raise HTTPException(status_code=500, detail=f"Failed to fetch_sprints: {str(e)}")
 
 # from backend.app.models.models import WorkItem, Sprint
-# from backend.app.utils.config import azure_devops_org, azure_devops_project, azure_devops_team, \
+# from backend.app.utils.config import self.azure_devops_org, self.azure_devops_project, self.azure_devops_team, \
 #     authentication_headers_azure, log_directory_path, logging_level, log_file_name
 
 
@@ -73,15 +83,15 @@ class AzureDevOpsService(BasePlatform):
                     "query": f"""
                         SELECT [System.Id], [System.WorkItemType]
                         FROM WorkItems
-                        WHERE [System.IterationPath] = '{azure_devops_project}\\{azure_devops_iteration_team}\\{sprint_name}'
-                        AND [System.TeamProject] = '{azure_devops_project}'
+                        WHERE [System.IterationPath] = '{self.azure_devops_project}\\{self.azure_devops_iteration_team}\\{sprint_name}'
+                        AND [System.TeamProject] = '{self.azure_devops_project}'
                         AND [System.State] = 'Closed'
                         ORDER BY [System.Id]
                     """
                 }
 
                 # URL to run the WIQL query
-                wiql_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/wit/wiql?api-version=7.1'
+                wiql_url = f'https://dev.azure.com/{self.azure_devops_org}/{self.azure_devops_project}/_apis/wit/wiql?api-version=7.1'
 
                 # Make the request to the WIQL API
                 wiql_response = await make_request(url=wiql_url, method='POST', headers=self.auth_headers, data=wiql_query)
@@ -94,7 +104,7 @@ class AzureDevOpsService(BasePlatform):
 
 
                 # Step 2: Fetch the detailed work items information
-                work_item_url = f'https://dev.azure.com/{azure_devops_org}/{azure_devops_project}/_apis/wit/workitems?ids={",".join(map(str, work_item_ids))}&api-version=7.1'
+                work_item_url = f'https://dev.azure.com/{self.azure_devops_org}/{self.azure_devops_project}/_apis/wit/workitems?ids={",".join(map(str, work_item_ids))}&api-version=7.1'
                 work_item_response = await make_request(url=work_item_url, method='GET', headers=self.auth_headers)
                 work_item_data = work_item_response.json()
                 # self.logger.info(f"Successfully fetched {len(work_item_data['value'])} work items for sprint '{sprint_name}'.")
