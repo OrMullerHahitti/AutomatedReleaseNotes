@@ -59,7 +59,8 @@ Use the following format:
 
 """
 
-paragraph_examples = ['''SMESH latest release is out with new features and improved performance to support your security engagements and work!
+paragraph_examples = [
+    '''SMESH latest release is out with new features and improved performance to support your security engagements and work!
 
 
 

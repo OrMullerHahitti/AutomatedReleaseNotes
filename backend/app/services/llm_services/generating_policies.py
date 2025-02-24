@@ -31,12 +31,6 @@ class BaseGenerator(ABC):
         """
         work_items= format_work_items(work_items)
         docs= await self.generate_release_notes(llm=self.llm,work_items=work_items)
-        #structured_llm_response = self.llm.with_structured_output(LLMResponse)
-
-        # release_notes = structured_llm_response.invoke(f'{docs} --- structure'
-        #                                                f'the following release note to match the structured out put to have Title, Doc name and content')
-      #  release_notes_chain = self.to_doc_template|self.llm|self.llm_response_output_parser
-      #  release_notes = release_notes_chain.invoke({"content": docs['text']})
         release_notes = self.llm_response_output_parser.parse(docs['text'])
         doc = Document()
 

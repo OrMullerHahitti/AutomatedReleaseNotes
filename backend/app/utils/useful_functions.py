@@ -41,15 +41,15 @@ async def make_request(url: str, method: str = 'POST', headers: dict = None, dat
             raise ValueError(method)
         response.raise_for_status()
         return response
-
 def get_azure_llm():
     api_key = authenticate_openai().api_key
     if not os.environ.get("OPENAI_API_KEY"):
         os.environ["OPENAI_API_KEY"] = api_key
-        return AzureChatOpenAI(deployment_name="gpt-4o-deployment",
-                          temperature=0.7,
-                          azure_endpoint='https://function-app-open-ai-prod-apim.azure-api.net/proxy-api/')
-
+    return AzureChatOpenAI(
+        deployment_name="gpt-4o-deployment",
+        temperature=0.7,
+        azure_endpoint="https://function-app-open-ai-prod-apim.azure-api.net/proxy-api/"
+    )
 
 def parse_html(html_string: str) -> str:
     soup = BeautifulSoup(html_string, 'html.parser')
