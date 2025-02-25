@@ -5,14 +5,14 @@ from azure_authentication_client import authenticate_openai
 from cachetools.func import ttl_cache
 import dotenv
 from dotenv import load_dotenv
+import urllib.request
 
+import urllib.parse
 
 
 @ttl_cache(ttl=60 * 60)
 def get_token_urlib():
-    import urllib.request
 
-    import urllib.parse
 
     load_dotenv()
     import certifi
