@@ -30,6 +30,5 @@ def get_token_urlib():
     with urllib.request.urlopen(req) as response:
         response_dict = json.loads(response.read().decode('utf-8'))
         return response_dict['access_token']
-authenticate_openai()
 api_key = get_token_urlib()
 print("hi")
