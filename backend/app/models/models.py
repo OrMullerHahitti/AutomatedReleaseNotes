@@ -46,11 +46,11 @@ class LLMconfig(BaseModel):
 
 #TODO: insert the correct description rules.
 class TopicStructured(BaseModel):
-    new_feature: List[str] = Field(default=None, alias="new_feature",description="any new feautre")
-    improvement: List[str] = Field(default=None, alias="improvement",description="improvements in the existing product")
-    bug_fixes: List[str] = Field(default=None, alias="bug_fixes" , description="anything related to bugs")
-    test: List[str] = Field(default=None, alias="test" , description="anything related to tests")
-    n_a: List[str] = Field(default=None, alias="n_a", description = "all other options + internal things")
+    new_feature: List[str] = Field(default=None, alias="new_feature",description="Enhancements or additions to the product that directly impact the user's experience, providing new functionalities or improving existing ones.")
+    improvement: List[str] = Field(default=None, alias="improvement",description="Changes made to enhance the performance, stability, or scalability of the underlying infrastructure or architecture of the product.")
+    bug_fixes: List[str] = Field(default=None, alias="bug_fixes" , description="Corrections made to resolve issues, errors, or unintended behaviors in the software.")
+    test: List[str] = Field(default=None, alias="test" , description="Procedures or scripts designed to verify that the software works as intended, ensuring quality and functionality.")
+    n_a: List[str] = Field(default=None, alias="n_a", description = "Refers to items or actions that don't fall under any of the specified categories, such as team member trainings or learnings, presentations to be done to management, etc")
 
 
 

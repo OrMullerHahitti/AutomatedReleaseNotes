@@ -1,18 +1,14 @@
 import asyncio
 import json
 from typing import List
-from urllib import response
 
 from langchain.chains.llm import LLMChain
 
-from backend.app.models.models import TopicStructured, WorkItem, LLMResponse
-from backend.app.services.llm_services.llm_plugs.prompts import paragraphGeneration, FinalAssembly, paragraph_examples
-from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+from backend.app.models.models import TopicStructured, LLMResponse
+from backend.app.services.llm_services.prompts import paragraphGeneration, FinalAssembly
+from langchain_core.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
-from langchain_core.messages import SystemMessage
-
-
 
 
 def return_structured_json(input_:str,llm,template,structure) -> json:
@@ -59,7 +55,6 @@ def build_final_assembly_chain(llm_pointer,example_final_doc,use_memory: bool = 
         template=prompt_str,
         input_variables=["paragraphs", "system_instructions"],
     )
-
     memory = ConversationBufferMemory(
         # By default, it expects just one input key.
         # You can specify which input key to focus on, for example:
@@ -115,6 +110,12 @@ async def generate_release_notes_paragraphs(
     }
     )
     return final_response
+
+
+
+
+
+# Example Usage:
+
+
 # if __name__ == "__main__":
-
-
