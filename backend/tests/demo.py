@@ -16,7 +16,7 @@ from backend.app.services.storage_services import SharePointStorageService
 repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, repo_root)
 
-from backend.app.services.llm_services.generating_policies import BasicGenerator
+from backend.app.services.llm_services.generate import BasicGenerator
 from backend.app.services.azure_devops_services import AzureDevOpsService
 
 

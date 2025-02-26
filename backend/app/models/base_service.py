@@ -1,9 +1,6 @@
 # app/services/base_service.py
 from abc import ABC, abstractmethod
-from typing import List
-
 from docx import Document
-
 from backend.app.models.models import *
 from backend.app.utils.useful_functions import format_work_items
 from backend.app.models.models import Sprint, WorkItem

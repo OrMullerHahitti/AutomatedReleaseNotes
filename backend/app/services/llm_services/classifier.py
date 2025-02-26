@@ -1,20 +1,10 @@
-import asyncio
 from abc import ABC, abstractmethod
 
-from langchain.chains.llm import LLMChain
-from langchain.output_parsers import StructuredOutputParser
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
-
 #from backend.app.routers.LLM import work_items
-from backend.app.services.azure_devops_services import AzureDevOpsService
-from backend.app.services.llm_services.llm_plugs.prompts import prompt_templates
-from langchain_core.prompts import PromptTemplate
-from backend.app.services.llm_services.llm_plugs.prompts import *
+from backend.app.services.llm_services.prompts import *
 from langchain.output_parsers import PydanticOutputParser
 from langchain_core.prompts import PromptTemplate
 from backend.app.models.models import TopicStructured
-from backend.app.utils.useful_functions import get_azure_llm, format_work_items
 
 
 class Classifier(ABC):
@@ -53,26 +43,11 @@ class BaseClassifer(Classifier):
         parser = PydanticOutputParser(pydantic_object=TopicStructured)
 
         prompt_template = PromptTemplate(
-            template="""
-            You are an AI that classifies work items.
-
-            Classify the following work items into one of the categories each: new_feature, improvement,bug_fixes,test,n_a
-
-            Format the response strictly as JSON using this schema:
-           {format_instructions}
-
-            Work Items:
-            {work_items}
-
-            Respond only with JSON.
-                        """,
+            template=classifiy_prompt,
             input_variables=["work_items"],
             partial_variables={"format_instructions": parser.get_format_instructions()}
         )
-
         chain = prompt_template|self.llm|parser
-
-        #TODO prompy_templates.tagging_base_prompt is in the llm plugs you can change it there and just run the module
         return await chain.ainvoke({"work_items": self.text})
 
 

@@ -1,6 +1,107 @@
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+class PromptBuilder:
+    def __init__(self):
+        self.role = ""
+        self.task_description = ""
+        self.input_specifications = ""
+        self.output_requirements = ""
+        self.constraints = ""
+        self.edge_cases = ""
+        self.example_prompt = ""
+
+    def set_role(self, role: str):
+        """Define the role of the AI."""
+        self.role = f"You are {role}."
+        return self
+
+    def set_task_description(self, description: str):
+        """Describe the specific task the AI needs to perform."""
+        self.task_description = description
+        return self
+
+    def set_input_specifications(self, input_spec: str):
+        """Define the expected input format or details."""
+        self.input_specifications = f"Input Format: {input_spec}."
+        return self
+
+    def set_output_requirements(self, output_req: str):
+        """Specify the format and structure of the output."""
+        self.output_requirements = f"Output Format: {output_req}."
+        return self
+
+    def set_constraints(self, constraints: str):
+        """Define strict rules and limitations for the AI's response."""
+        self.constraints = f"Rules: {constraints}."
+        return self
+
+    def set_edge_cases(self, edge_cases: str):
+        """Specify how to handle ambiguous cases."""
+        self.edge_cases = f"Edge Cases: {edge_cases}."
+        return self
+
+    def set_example_prompt(self, example: str):
+        """Provide an example of a well-structured prompt."""
+        self.example_prompt = f"Example: {example}"
+        return self
+
+    def build(self):
+        """Constructs and returns the final prompt as a formatted string."""
+        return "\n".join(filter(None, [
+            self.role,
+            self.task_description,
+            self.input_specifications,
+            self.output_requirements,
+            self.constraints,
+            self.edge_cases,
+            self.example_prompt
+        ]))
+'''example usage for prompt builder'''
+'''prompt = (PromptBuilder()
+          .set_role("an AI that classifies work items")
+          .set_task_description("Classify the following work items into predefined categories.")
+          .set_input_specifications("A list of work item descriptions")
+          .set_output_requirements("Strict JSON format with a list of classified work items")
+          .set_constraints("Each work item must belong to one category; respond only in JSON format")
+          .set_edge_cases("If an item does not match any category, classify it as 'n_a'")
+          .set_example_prompt("Work Items: {work_items}\nRespond only with JSON.")
+          .build())'''
 
 
+classifiy_prompt=(PromptBuilder().set_role("You are an AI that classifies work items.")
+                               .set_task_description("Classify the following work items into predefined categories.")
+                               .set_input_specifications("A list of work items. ")
+                               .set_output_requirements("""Format the response strictly as JSON using this schema:
+           {format_instructions}""").set_edge_cases("If an item does not match any category, classify it as 'n_a' althgough try to avoid that")
+                               .set_constraints("Each work item must belong to one category; respond only in JSON format")
+                                 .set_example_prompt("Work Items: {work_items}\nRespond only with JSON.").build())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class classifying_prompt:
+    classification_one:str = """
+            You are an AI that classifies work items.
+
+            Classify the following work items into one of the categories each: new_feature, improvement,bug_fixes,test,n_a
+
+            Format the response strictly as JSON using this schema:
+           {format_instructions}
+
+            Work Items:
+            {work_items}
+
+            Respond only with JSON.
+                        """
 class system_insturctions:
     system_one :str = "you are a proffessional releasse note expert with highly skilled in writing release notes"
     system_two:str = '''Act as a technical writer. you will write release notes for the input data below.'

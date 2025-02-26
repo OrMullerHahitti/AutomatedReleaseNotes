@@ -7,6 +7,10 @@ from backend.app.models.models import WorkItem
 from bs4 import BeautifulSoup
 from docx import Document
 
+<<<<<<< HEAD
+=======
+from backend.app.utils.token_getter_llm import get_token_urlib
+>>>>>>> 20d549765888f3e22fe62d31f2ac15bcf9043a41
 
 
 def format_work_items(work_items:List[WorkItem]):
@@ -44,7 +48,7 @@ async def make_request(url: str, method: str = 'POST', headers: dict = None, dat
         response.raise_for_status()
         return response
 def get_azure_llm():
-    api_key = authenticate_openai().api_key
+    api_key = get_token_urlib()
     if not os.environ.get("OPENAI_API_KEY"):
         os.environ["OPENAI_API_KEY"] = api_key
     return AzureChatOpenAI(
@@ -52,6 +56,8 @@ def get_azure_llm():
         temperature=0.7,
         azure_endpoint="https://function-app-open-ai-prod-apim.azure-api.net/proxy-api/"
     )
+llm = get_azure_llm()
+print("sop")
 
 def parse_html(html_string: str) -> str:
     soup = BeautifulSoup(html_string, 'html.parser')

@@ -6,13 +6,12 @@ from docx import Document
 
 from langchain_core.output_parsers import PydanticOutputParser
 
-from backend.app.models.models import WorkItem, TopicStructured, LLMResponse
+from backend.app.models.models import WorkItem, LLMResponse
 from backend.app.services.llm_services.classifier import BaseClassifer
-from backend.app.services.llm_services.llm_plugs.prompts import *
-from backend.app.services.llm_services.llm_plugs import *
+from backend.app.services.llm_services.prompts import *
 from backend.app.services.llm_services.llm_utils import generate_release_notes_paragraphs
 from backend.app.utils.useful_functions import format_work_items, get_azure_llm
-from backend.app.services.llm_services.llm_plugs.prompts import paragraph_examples as example_outputs
+from backend.app.services.llm_services.prompts import paragraph_examples as example_outputs
 class BaseGenerator(ABC):
     """
     Abstract base class defining the 'generate_release_notes' interface.
@@ -21,10 +20,6 @@ class BaseGenerator(ABC):
     def __init__(self,llm):
         self.llm=llm
         self.llm_response_output_parser = PydanticOutputParser(pydantic_object=LLMResponse)
-        self.to_doc_template = PromptTemplate(
-            template="""Given the following release note content:
-            {content} format it given the parser given"""
-        )
     async def generate(self, work_items: List[WorkItem]) -> LLMResponse:
         """
         Generate release notes from a list of WorkItems using the provided LLM.
@@ -81,23 +76,15 @@ class BasicGenerator(BaseGenerator):
 
 
 if __name__ == "__main__":
-    from azure_authentication_client import authenticate_openai
-    from langchain_openai import AzureChatOpenAI
     from langchain.prompts import PromptTemplate
     from backend.app.services.azure_devops_services import AzureDevOpsService
 
-    from backend.app.utils.useful_functions import save_object_to_pickle,load_dict_from_pickle
     llm1 = get_azure_llm()
     async def testing_one_two(language):
         test_service = AzureDevOpsService()
-        work_items = load_dict_from_pickle('3031.pickle')
-        #work_items = await test_service.fetch_work_items_for_multiple_sprints(["Sprint 30", "Sprint 31"])
+       # work_items = load_dict_from_pickle('3031.pickle')
+        work_items = await test_service.fetch_work_items_for_multiple_sprints(["Sprint 28", "Sprint 29","Sprint 30","Sprint 31"])
         gen = BasicGenerator(llm1)
         response = await gen.generate(work_items)
         print(response)
     asyncio.run(testing_one_two(llm1))
-    print("hold")
-
-
-
-
