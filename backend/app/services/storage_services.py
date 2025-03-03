@@ -1,13 +1,13 @@
 
 from io import BytesIO
 from typing import Optional
-from backend.app.utils.useful_functions import make_request, convert_docx_to_text, convert_text_to_docx
-from backend.app.models.base_service import BaseStorage
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
-from fastapi import HTTPException
-from docx import Document
 import logging
-
+from backend.app.utils.config import azure_app_tenant_id, azure_app_client_id , azure_app_client_secret
+from backend.app.utils.useful_functions import convert_text_to_docx
+from backend.app.models.base_service import BaseStorage
+from azure.storage.blob import BlobServiceClient
+from azure.identity import ClientSecretCredential  # Use ClientSecretCredential directly
+from docx import Document
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,16 +18,25 @@ class BlobStorageService(BaseStorage):
     This class allows saving text as a .docx file and fetching the content of an existing .docx file from Blob Storage.
     """
 
-    def __init__(self, connection_string: str, container_name: str):
+    def __init__(self, account_url: str, container_name: str):
         """
-        Initializes the BlobStorageService with connection string and container name.
+        Initializes the BlobStorageService with Azure Storage account URL and container name.
 
         Args:
-            connection_string (str): Azure Blob Storage connection string.
+            account_url (str): The URL of the Azure Blob Storage account.
             container_name (str): The container where the files are stored.
         """
         super().__init__(secrets={})  # Assuming no credentials needed, or you can handle via environment variables.
-        self.blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+
+        # Use the credentials from config.py
+        credential = ClientSecretCredential(
+            tenant_id=azure_app_tenant_id,
+            client_id=azure_app_client_id,
+            client_secret=azure_app_client_secret
+        )
+
+        # Initialize the BlobServiceClient with the provided credentials
+        self.blob_service_client = BlobServiceClient(account_url=account_url, credential=credential)
         self.container_client = self.blob_service_client.get_container_client(container_name)
 
     def save_file(self, file_name: str, title: str, content: str) -> bool:
@@ -62,7 +71,7 @@ class BlobStorageService(BaseStorage):
 
         except Exception as e:
             logger.error(f"Failed to save file to Blob Storage: {str(e)}")
-
+            return False
 
     def fetch_file(self, signature: str) -> Optional[Document]:
         """
