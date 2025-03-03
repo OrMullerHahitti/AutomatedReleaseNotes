@@ -3,11 +3,11 @@ import os
 
 from azure_authentication_client import authenticate_openai
 from cachetools.func import ttl_cache
-import dotenv
 from dotenv import load_dotenv
 import urllib.request
 
 import urllib.parse
+
 
 
 @ttl_cache(ttl=60 * 60)
@@ -30,5 +30,7 @@ def get_token_urlib():
     with urllib.request.urlopen(req) as response:
         response_dict = json.loads(response.read().decode('utf-8'))
         return response_dict['access_token']
+
+
 api_key = get_token_urlib()
 print("hi")

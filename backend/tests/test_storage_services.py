@@ -2,7 +2,6 @@
 from backend.app.services.storage_services import SharePointStorageService
 from backend.app.utils.config import sharepoint_site, sharepoint_folder, sharepoint_username, sharepoint_password
 
-# "https://ts.accenture.com/sites/CoreTeam-SoftwareEngineering/Shared Documents/General/ARN/"
 
 
 def test():
@@ -15,3 +14,13 @@ def test():
         print(paragraph.text)
 
 test()
+
+
+# from office365.sharepoint.client_context import ClientContext
+# from office365.runtime.auth.authentication_context import AuthenticationContext
+#
+# context = AuthenticationContext(url)
+#
+# if context.acquire_token_for_user(username=sharepoint_username, password=sharepoint_password):
+#     context = ClientContext(url, context)
+#     print(context)

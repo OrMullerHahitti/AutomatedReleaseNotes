@@ -36,14 +36,13 @@ sharepoint_site = os.getenv("SHAREPOINT_SITE")
 sharepoint_folder = os.getenv("SHAREPOINT_FOLDER")
 sharepoint_username = os.getenv("SHAREPOINT_USERNAME")
 sharepoint_password = os.getenv("SHAREPOINT_PASSWORD")
+azure_openai_endpoint = os.getenv('AZURE_OPENAI_ENDPOINT')
+azure_app_tenant_id = os.getenv('AZURE_APP__TENANT_ID')
+azure_app_client_secret = os.getenv('AZURE_APP__CLIENT_SECRET')
+azure_app_client_id = os.getenv('AZURE_APP__CLIENT_ID')
+azure_app_scope = os.getenv('AZURE_APP__SCOPE')
 
-class settings:
-    def __init__(self):
-        self.testa = "test!!!!!"
-        self.check = azure_devops_team
 
-testy = settings()
-print(testy.check)
 
 
 

@@ -4,6 +4,7 @@ from docx import Document
 from backend.app.models.models import *
 from backend.app.utils.useful_functions import format_work_items
 from backend.app.models.models import Sprint, WorkItem
+import typing
 
 
 class BasePlatform(ABC):
@@ -44,14 +45,16 @@ class BaseStorage(ABC):
         """
         Convert LLM response to structured text (????)
         Save the given Document object into the database or storage system.
+        returns true iff file upload succeeded
         """
         pass
 
     @abstractmethod
-    async def fetch_file(self , signature: str) -> Document:
+    async def fetch_file(self , signature: str) -> Optional[Document]:
         """
         Fetch a file (Document object) from the storage system.
         signature = file name string to look for
+        returns the Document itself or None
         """
         pass
 

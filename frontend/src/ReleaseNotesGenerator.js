@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://127.0.0.1:8000'; // set up the backend url globally
+axios.defaults.baseURL = 'http://127.0.0.1:8000'; // set up the backend URL globally
 
 const ReleaseNotesGenerator = () => {
     const [sprints, setSprints] = useState([]);
@@ -14,7 +13,7 @@ const ReleaseNotesGenerator = () => {
     useEffect(() => {
         const fetchSprints = async () => {
             try {
-                const response = await axios.get( '/sprints/', {maxRedirects : 0, });
+                const response = await axios.get('/sprints/');
                 setSprints(response.data); // assuming response.data is the list of sprints
             } catch (error) {
                 console.error('Error fetching sprints:', error);
@@ -29,8 +28,8 @@ const ReleaseNotesGenerator = () => {
         const value = event.target.value;
         setSelectedSprints((prevSelectedSprints) =>
             prevSelectedSprints.includes(value)
-                ? prevSelectedSprints.filter((sprint) => sprint !== value)
-                : [...prevSelectedSprints, value]
+                ? prevSelectedSprints.filter((sprint) => sprint !== value) // Deselecting
+                : [...prevSelectedSprints, value] // Selecting
         );
     };
 
@@ -62,21 +61,27 @@ const ReleaseNotesGenerator = () => {
         <div>
             <h1>Release Notes Generator</h1>
 
-            {/* Sprint Selection */}
+            {/* Sprint Selection - Checklist */}
             <div>
                 <h3>Select Sprints</h3>
                 {sprints.length > 0 ? (
                     <div>
-                        {sprints.map((sprint) => (
-                            <label key={sprint.id}>
-                                <input
-                                    type="checkbox"
-                                    value={sprint.id}
-                                    onChange={handleSprintChange}
-                                />
-                                {sprint.name}
-                            </label>
-                        ))}
+                        {/* Render a checklist for selecting multiple sprints */}
+                        <ul style={{ listStyleType: 'none', padding: 0 }}>
+                            {sprints.map((sprint) => (
+                                <li key={sprint.name} style={{ margin: '10px 0' }}>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            value={sprint.name}
+                                            onChange={handleSprintChange}
+                                            checked={selectedSprints.includes(sprint.name)} // Mark the checkbox if selected
+                                        />
+                                        {sprint.name}
+                                    </label>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 ) : (
                     <p>Loading sprints...</p>
@@ -92,7 +97,6 @@ const ReleaseNotesGenerator = () => {
 
             {/* Spinner */}
             {loading && <div className="spinner"></div>}
-
 
             {/* Document Download */}
             {docUrl && (
