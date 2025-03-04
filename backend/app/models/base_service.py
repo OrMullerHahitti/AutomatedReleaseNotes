@@ -41,7 +41,7 @@ class BaseStorage(ABC):
         self.secrets = secrets # password for auth
 
     @abstractmethod
-    async def save_file(self, file_name: str, title: str,  content: str) -> bool:
+    async def save_file(self, doc: Document, file_name: str) -> bool:
         """
         Convert LLM response to structured text (????)
         Save the given Document object into the database or storage system.

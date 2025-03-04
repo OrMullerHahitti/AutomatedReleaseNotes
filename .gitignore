@@ -10,4 +10,5 @@
 /.idea/httpRequests/http-client.cookies
 /.idea/httpRequests/http-requests-log.http
 __pycache__/
+*.docx
 

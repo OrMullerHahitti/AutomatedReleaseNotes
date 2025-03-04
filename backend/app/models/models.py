@@ -26,11 +26,14 @@ class WorkItem(BaseModel):
 
 class LLMResponse(BaseModel):
     ''''Document to be made from the list of work items'''
-
-
     doc_name:str=Field(..., alias="doc_name",description="name of document to be displayed",example="version_1.0.docx")
     title: str = Field(..., alias="title",description="title of document")
     content: str = Field(..., alias="content",description="the release notes content")
+
+
+class DocumentResponse(BaseModel):
+    """Response model for the generated document"""
+    doc: bytes  # The document will be returned as a byte stream
 
 class Sprint(BaseModel):
     id: str | None = Field(None, alias="id")

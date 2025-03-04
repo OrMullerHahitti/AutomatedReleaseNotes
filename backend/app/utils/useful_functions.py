@@ -6,6 +6,8 @@ from langchain_openai import AzureChatOpenAI
 from backend.app.models.models import WorkItem
 from bs4 import BeautifulSoup
 from docx import Document
+from io import BytesIO
+
 
 
 # import certifi
@@ -127,6 +129,13 @@ def convert_docx_to_text(doc: Document) -> str:
     document_text = '\n'.join(full_text)
 
     return document_text
+
+
+def convert_docx_to_bytes(doc: Document) -> bytes:
+    """Converts a `Document` object to bytes."""
+    byte_io = BytesIO()
+    doc.save(byte_io)
+    return byte_io.getvalue()
 
 # class TokenResponse():
 #     def __init__(self, tokenType, accessToken):

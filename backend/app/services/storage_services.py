@@ -40,7 +40,7 @@ class BlobStorageService(BaseStorage):
         self.blob_service_client = BlobServiceClient(account_url=account_url, credential=credential)
         self.container_client = self.blob_service_client.get_container_client(container_name)
 
-    def save_file(self, file_name: str, title: str, content: str) -> bool:
+    def save_file(self, doc: Document, file_name: str) -> bool:
         """
         Converts the text content to a .docx file and uploads it to Azure Blob Storage.
 
@@ -53,16 +53,11 @@ class BlobStorageService(BaseStorage):
             bool: True iff the file was successfully uploaded
         """
         try:
-            # Convert to a Document Object (docx)
-            doc = convert_text_to_docx(title, content)
 
             # Save the document to an in-memory binary stream
             doc_stream = BytesIO()
             doc.save(doc_stream)  # Save the document to the in-memory stream
             doc_stream.seek(0)  # Rewind the stream to the beginning
-
-            # Prepare the blob name (e.g., "document.docx")
-            file_name = f"{file_name}.docx"
 
             # Upload the file to Azure Blob Storage
             logger.info(f"Starting to upload {file_name} to {self.container_client.url}...")
