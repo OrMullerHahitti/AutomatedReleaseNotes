@@ -6,23 +6,20 @@ from typing import List
 from backend.app.services.azure_devops_services import AzureDevOpsService
 from backend.app.services.storage_services import BlobStorageService
 from backend.app.utils.config import (authentication_headers_azure, azure_devops_org, azure_devops_project, azure_devops_team, azure_devops_iteration_team, blob_storage_account_url, blob_storage_container_name)
-from backend.app.models.models import Sprint, WorkItem, LLMResponse , SprintRequest , DocumentResponse
+from backend.app.models.models import Sprint, SprintRequest
 from backend.app.utils.useful_functions import convert_text_to_docx, convert_docx_to_bytes
 import logging
-from azure_authentication_client import authenticate_openai
-from langchain_openai import AzureChatOpenAI
 from backend.app.services.llm_services.generate import BasicGenerator
 from backend.app.utils.useful_functions import get_azure_llm
-from docx import Document
 from io import BytesIO
 
-# import pdb
 
 
 # Initialize FastAPI router for the endpoints
 router = APIRouter()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 # Dependency to get AzureDevOpsService platform connection
 async def get_platform(
@@ -58,6 +55,8 @@ async def get_generator():
     except Exception as e:
         logger.error(f"Unexpected error occurred while creating the generator: {e}")
 
+
+# Dependency to create an instance of StorageService
 async def get_storage_service():
     try:
         storage_service = BlobStorageService(blob_storage_account_url, blob_storage_container_name)
@@ -148,17 +147,3 @@ async def generate_release_notes(request: SprintRequest,
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
-
-
-# A simple test endpoint that returns a "hello world" string
-@router.get("/test/", response_model=str)
-async def test() -> str:
-    """
-    A simple test endpoint to ensure the API is working correctly.
-    It returns a "hello world" string for testing purposes.
-    """
-    try:
-        result = "@@@@"
-        return result
-    except HTTPException as e:
-        raise HTTPException(status_code=e.status_code, detail=str(e))
