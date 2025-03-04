@@ -1,3 +1,13 @@
+/*
+ * ================================
+ * Global Styles
+ * ================================
+ */
+
+/*
+ * Reset the margin and padding for the entire body, set the font-family for a consistent look, and apply a light pink background.
+ * The line-height is set to improve readability and a flexbox layout is used for centering content vertically and horizontally.
+ */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -11,9 +21,16 @@ body {
   align-items: center;
   height: 100vh;
   opacity: 0;
-  animation: fadeIn 1s ease-in forwards;
+  animation: fadeIn 1s ease-in forwards; /* Fade in the body when the page loads */
 }
 
+/*
+ * ================================
+ * Keyframe Animations
+ * ================================
+ */
+
+/* Fade in animation for elements */
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -23,17 +40,7 @@ body {
   }
 }
 
-h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin-bottom: 20px;
-  font-weight: bold;
-  text-align: center;
-  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-  animation: slideInFromTop 1s ease-out forwards;
-  margin-top: 0; /* No extra margin at the top */
-}
-
+/* Slide-in animation for the h1 title from the top */
 @keyframes slideInFromTop {
   0% {
     transform: translateY(-30px);
@@ -45,6 +52,49 @@ h1 {
   }
 }
 
+/* Animation for items appearing from the left */
+@keyframes fadeInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Spinning animation for loading spinner */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/*
+ * ================================
+ * Header Styles
+ * ================================
+ */
+
+/* Style for the main title h1 */
+h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); /* Adds a subtle shadow to the text */
+  animation: slideInFromTop 1s ease-out forwards;
+  margin-top: 0; /* No extra margin at the top */
+}
+
+/*
+ * ================================
+ * Container Styles
+ * ================================
+ */
+
+/* Container for the main content area with some padding, a background, and a subtle box shadow */
 .container {
   max-width: 800px;
   width: 100%;
@@ -57,6 +107,13 @@ h1 {
   animation: fadeIn 1s 0.5s ease-in forwards;
 }
 
+/*
+ * ================================
+ * Subtitle Styles
+ * ================================
+ */
+
+/* Style for secondary headers h3 */
 h3 {
   font-size: 1.6rem;
   color: #34495e;
@@ -65,6 +122,13 @@ h3 {
   animation: fadeIn 1s 0.5s ease-in forwards;
 }
 
+/*
+ * ================================
+ * Button Styles
+ * ================================
+ */
+
+/* Style for primary action button */
 button {
   background-color: #9b59b6; /* Purple button color */
   color: white;
@@ -79,18 +143,27 @@ button {
   margin: 30px auto;
 }
 
+/* Hover effect for button */
 button:hover {
   background-color: #8e44ad; /* Darker purple on hover */
   transform: scale(1.1); /* Slightly enlarge button on hover */
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2); /* Increase shadow effect */
 }
 
+/* Disabled button styles */
 button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
   box-shadow: none;
 }
 
+/*
+ * ================================
+ * Label Styles
+ * ================================
+ */
+
+/* Label for form elements with animation */
 label {
   font-size: 1.2rem;
   color: #2c3e50;
@@ -100,16 +173,31 @@ label {
   animation: fadeInFromLeft 0.6s ease-in forwards;
 }
 
+/*
+ * ================================
+ * Checkbox Styles
+ * ================================
+ */
+
+/* Styling for checkboxes with a slight scale on hover */
 input[type="checkbox"] {
   margin-right: 15px;
   transform: scale(1.2);
   transition: transform 0.2s ease;
 }
 
+/* When checkbox is checked, apply a rotation */
 input[type="checkbox"]:checked {
-  transform: scale(1.2) rotate(10deg); /* Add rotation when checked */
+  transform: scale(1.2) rotate(10deg);
 }
 
+/*
+ * ================================
+ * List Styles
+ * ================================
+ */
+
+/* List items with animation to fade in */
 ul {
   padding-left: 20px;
 }
@@ -136,6 +224,13 @@ li label {
   color: #ecf0f1; /* Light color for labels */
 }
 
+/*
+ * ================================
+ * Spinner Styles
+ * ================================
+ */
+
+/* Loading spinner animation */
 .spinner {
   border: 4px solid #f3f3f3;
   border-top: 4px solid #3498db;
@@ -145,11 +240,13 @@ li label {
   animation: spin 2s linear infinite;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+/*
+ * ================================
+ * Link Styles
+ * ================================
+ */
 
+/* Links with color change on hover */
 a {
   color: #3498db;
   text-decoration: none;
@@ -161,6 +258,13 @@ a:hover {
   text-decoration: underline;
 }
 
+/*
+ * ================================
+ * Paragraph Styles
+ * ================================
+ */
+
+/* Centered paragraph with animation */
 p {
   text-align: center;
   font-size: 1.3rem;
@@ -169,6 +273,13 @@ p {
   animation: fadeIn 1s 1.5s ease-in forwards;
 }
 
+/*
+ * ================================
+ * Document Link Styling
+ * ================================
+ */
+
+/* Link to download the document with hover effects */
 .document-link {
   text-align: center;
   margin-top: 25px;
@@ -193,25 +304,46 @@ p {
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes fadeInFromLeft {
+/*
+ * ================================
+ * Notification Pop-up Styles
+ * ================================
+ */
+
+/* Notification pop-up with success or failure styling */
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 5px;
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeIn 1s forwards, fadeOut 1s 2s forwards;
+}
+
+.notification.success {
+  background-color: #28a745; /* Green for success */
+}
+
+.notification.failure {
+  background-color: #dc3545; /* Red for failure */
+}
+
+@keyframes fadeOut {
   0% {
-    opacity: 0;
-    transform: translateX(-20px);
+    opacity: 1;
   }
   100% {
-    opacity: 1;
-    transform: translateX(0);
+    opacity: 0;
   }
 }
 
-@keyframes bounce {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+/* Make sure <strong> text is bold */
+strong {
+  font-weight: bold;
 }
