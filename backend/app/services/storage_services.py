@@ -36,6 +36,7 @@ class BlobStorageService(BaseStorage):
         )
 
         # Initialize the BlobServiceClient with the provided credentials
+        logger.info(f"Initializing the BlobStorageObject with parameters {account_url} , {container_name}")
         self.blob_service_client = BlobServiceClient(account_url=account_url, credential=credential)
         self.container_client = self.blob_service_client.get_container_client(container_name)
 
@@ -64,8 +65,10 @@ class BlobStorageService(BaseStorage):
             file_name = f"{file_name}.docx"
 
             # Upload the file to Azure Blob Storage
+            logger.info(f"Starting to upload {file_name} to {self.container_client.url}...")
             blob_client = self.container_client.get_blob_client(file_name)
             blob_client.upload_blob(doc_stream, overwrite=True)
+            logger.info(f"Successfully uploaded {file_name} to {self.container_client.url}")
 
             return True
 
