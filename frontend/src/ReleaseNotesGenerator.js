@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
-import confetti from 'canvas-confetti'; // Import canvas-confetti
+import confetti from 'canvas-confetti';
 
-// Set the base URL for axios requests using an environment variable
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
 const ReleaseNotesGenerator = () => {
@@ -21,11 +20,33 @@ const ReleaseNotesGenerator = () => {
                 setSprints(response.data);
             } catch (error) {
                 console.error('Error fetching sprints:', error);
+
+                let errorMessage = 'An error occurred while fetching sprints.';
+
+                if (error.code === 'ECONNABORTED') {
+                    errorMessage = 'Request timed out. Please try again later.';
+                } else if (!error.response) {
+                    errorMessage = 'Unable to reach the backend service. Please try again later.';
+                } else if (error.response) {
+                    const statusCode = error.response.status;
+                    errorMessage = `Failed to load sprints. HTTP Code: ${statusCode}`;
+                }
+
+                // Use a functional update to set the notification
+                setNotification((prevNotification) => ({
+                    ...prevNotification,
+                    message: errorMessage,
+                    type: 'failure',
+                    visible: true,
+                }));
+
+                // Clear notification after the specified timeout
+                setTimeout(() => setNotification((prevNotification) => ({ ...prevNotification, visible: false })), notificationTimeout);
             }
         };
 
         fetchSprints();
-    }, []);
+    }, [notificationTimeout]); // Only include notificationTimeout, no need to include 'notification'
 
     const handleSprintChange = (selectedOptions) => {
         setSelectedSprints(selectedOptions || []);
@@ -37,7 +58,6 @@ const ReleaseNotesGenerator = () => {
             return;
         }
 
-        // Clear previous document URL and notifications when a new generate call is made
         setDocUrl(null);  // Clear any previous docUrl
         setNotification({ message: '', type: '', visible: false });  // Clear previous notification
 
@@ -51,39 +71,52 @@ const ReleaseNotesGenerator = () => {
                 responseType: 'blob',
             });
 
-            // Trigger the confetti animation
+            // Trigger confetti animation
             confetti({
-                particleCount: process.env.REACT_APP_CONFETTI_PARTICLE_COUNT,       // Number of confetti particles
-                spread: process.env.REACT_APP_CONFETTI_SPREAD,               // Spread of the confetti
-                origin: { x: 0.5, y: 0.5 }, // Origin of the confetti (center of the screen)
+                particleCount: process.env.REACT_APP_CONFETTI_PARTICLE_COUNT,
+                spread: process.env.REACT_APP_CONFETTI_SPREAD,
+                origin: { x: 0.5, y: 0.5 },
             });
 
-            //
-            // Create a URL for the Word document
             const url = window.URL.createObjectURL(new Blob([response.data], {
                 type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             }));
             setDocUrl(url);
 
-            // Set the success notification
-            setNotification({
+            // Use a functional update to set the notification
+            setNotification((prevNotification) => ({
+                ...prevNotification,
                 message: `Success! HTTP Code: ${response.status}`,
                 type: 'success',
                 visible: true,
-            });
+            }));
 
-            setTimeout(() => setNotification({ ...notification, visible: false }), notificationTimeout);
+            // Clear notification after the specified timeout
+            setTimeout(() => setNotification((prevNotification) => ({ ...prevNotification, visible: false })), notificationTimeout);
         } catch (error) {
             console.error('Error generating release notes:', error);
 
-            const statusCode = error.response ? error.response.status : 'Unknown';
-            setNotification({
-                message: `Failure! HTTP Code: ${statusCode}`,
+            let errorMessage = 'An error occurred while generating release notes.';
+
+            if (error.code === 'ECONNABORTED') {
+                errorMessage = 'Request timed out. Please try again later.';
+            } else if (!error.response) {
+                errorMessage = 'Unable to reach the backend service. Please try again later.';
+            } else if (error.response) {
+                const statusCode = error.response.status;
+                errorMessage = `Failure! HTTP Code: ${statusCode}`;
+            }
+
+            // Use a functional update to set the notification
+            setNotification((prevNotification) => ({
+                ...prevNotification,
+                message: errorMessage,
                 type: 'failure',
                 visible: true,
-            });
+            }));
 
-            setTimeout(() => setNotification({ ...notification, visible: false }), notificationTimeout);
+            // Clear notification after the specified timeout
+            setTimeout(() => setNotification((prevNotification) => ({ ...prevNotification, visible: false })), notificationTimeout);
         } finally {
             setLoading(false);
         }
