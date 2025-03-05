@@ -39,6 +39,8 @@ azure_app_client_id = os.getenv('AZURE_APP__CLIENT_ID')
 azure_app_scope = os.getenv('AZURE_APP__SCOPE')
 blob_storage_account_url = os.getenv('BLOB_STORAGE_ACCOUNT_URL')
 blob_storage_container_name = os.getenv('BLOB_STORAGE_CONTAINER_NAME')
+allowed_origins_dev = os.getenv('ALLOWED_ORIGINS_DEV')
+allowed_origins_prod = os.getenv('ALLOWED_ORIGINS_PROD')
 
 
 

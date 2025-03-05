@@ -5,7 +5,8 @@ from fastapi.responses import StreamingResponse
 from typing import List
 from backend.app.services.azure_devops_services import AzureDevOpsService
 from backend.app.services.storage_services import BlobStorageService
-from backend.app.utils.config import (authentication_headers_azure, azure_devops_org, azure_devops_project, azure_devops_team, azure_devops_iteration_team, blob_storage_account_url, blob_storage_container_name)
+from backend.app.utils.config import (authentication_headers_azure, azure_devops_org, azure_devops_project, azure_devops_team,
+                                      azure_devops_iteration_team, blob_storage_account_url, blob_storage_container_name, logging_level)
 from backend.app.models.models import Sprint, SprintRequest
 from backend.app.utils.useful_functions import convert_text_to_docx, convert_docx_to_bytes
 import logging
@@ -17,7 +18,7 @@ from io import BytesIO
 
 # Initialize FastAPI router for the endpoints
 router = APIRouter()
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=getattr(logging, logging_level , logging.INFO))
 logger = logging.getLogger(__name__)
 
 

@@ -1,16 +1,14 @@
 import asyncio
-from typing import List
 from fastapi import HTTPException
 from backend.app.utils.useful_functions import make_request
 from backend.app.models.models import *
-# from backend.app.utils.config import *
-# from backend.app.utils.CustomLogger import CustomLogger
 from backend.app.models.base_service import BasePlatform
 from datetime import datetime
 from backend.app.utils.useful_functions import parse_html
+from backend.app.utils.config import logging_level
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=getattr(logging, logging_level , logging.INFO))
 logger = logging.getLogger(__name__)
 
 class AzureDevOpsService(BasePlatform):

@@ -2,13 +2,13 @@
 from io import BytesIO
 from typing import Optional
 import logging
-from backend.app.utils.config import azure_app_tenant_id, azure_app_client_id , azure_app_client_secret
+from backend.app.utils.config import azure_app_tenant_id, azure_app_client_id , azure_app_client_secret, logging_level
 from backend.app.models.base_service import BaseStorage
 from azure.storage.blob import BlobServiceClient
 from azure.identity import ClientSecretCredential
 from docx import Document
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=getattr(logging, logging_level , logging.INFO))
 logger = logging.getLogger(__name__)
 
 class BlobStorageService(BaseStorage):

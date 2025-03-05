@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 from backend.app.routers.endpoints import router
+from backend.app.utils.config import allowed_origins_dev, allowed_origins_prod , logging_level
 
 
 # Run: uvicorn backend.app.main:app --reload --log-level debug
@@ -12,13 +13,13 @@ from backend.app.routers.endpoints import router
 app = FastAPI()
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=getattr(logging, logging_level , logging.INFO))
 logger = logging.getLogger(__name__)
 
 # Configure CORS
 origins = [
-    "http://localhost:3000",  # Frontend during development
-    "https://your-frontend-domain.com"  # Frontend in production
+    allowed_origins_dev,  # Frontend during development
+    allowed_origins_prod  # Frontend in production
 ]
 
 # Instantiate the CORSMiddleware class
