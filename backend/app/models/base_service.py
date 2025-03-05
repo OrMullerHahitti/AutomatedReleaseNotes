@@ -2,9 +2,7 @@
 from abc import ABC, abstractmethod
 from docx import Document
 from backend.app.models.models import *
-from backend.app.utils.useful_functions import format_work_items
 from backend.app.models.models import Sprint, WorkItem
-import typing
 
 
 class BasePlatform(ABC):
@@ -28,12 +26,6 @@ class BaseLLMService(ABC):
     async def generate_response(self, work_items: list[WorkItem]) -> str:
         pass
 
-
-
-
-#TODO: Advise with OR: is it generic enough?
-#TODO: what will be stored - txt or docx?
-#TODO: what will be the correct parameters for the functions , and return types?
 
 class BaseStorage(ABC):
 

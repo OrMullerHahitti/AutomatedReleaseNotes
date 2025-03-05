@@ -37,6 +37,10 @@ const ReleaseNotesGenerator = () => {
             return;
         }
 
+        // Clear previous document URL and notifications when a new generate call is made
+        setDocUrl(null);  // Clear any previous docUrl
+        setNotification({ message: '', type: '', visible: false });  // Clear previous notification
+
         setLoading(true);
 
         try {
@@ -49,11 +53,12 @@ const ReleaseNotesGenerator = () => {
 
             // Trigger the confetti animation
             confetti({
-                particleCount: 100,       // Number of confetti particles
-                spread: 70,               // Spread of the confetti
+                particleCount: process.env.REACT_APP_CONFETTI_PARTICLE_COUNT,       // Number of confetti particles
+                spread: process.env.REACT_APP_CONFETTI_SPREAD,               // Spread of the confetti
                 origin: { x: 0.5, y: 0.5 }, // Origin of the confetti (center of the screen)
             });
 
+            //
             // Create a URL for the Word document
             const url = window.URL.createObjectURL(new Blob([response.data], {
                 type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -102,6 +107,7 @@ const ReleaseNotesGenerator = () => {
                         onChange={handleSprintChange}
                         getOptionLabel={(e) => <strong>{e.label}</strong>}
                         placeholder="Select sprints..."
+                        isDisabled={loading}  // Disable the dropdown while loading
                     />
                 ) : (
                     <p>Loading sprints...</p>

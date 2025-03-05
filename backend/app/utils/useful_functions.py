@@ -19,9 +19,6 @@ def format_work_items(work_items:List[WorkItem]):
     return "\n".join(f"- {item.title}: {item.description} (Type: {item.type}, State: {item.state} , {item.id})"
                      for item in work_items)
 
-def format_work_items_light(work_items:List[WorkItem]):
-    return "\n".join(f"{item.title}"
-                     for item in work_items)
 
 async def make_request(url: str, method: str = 'POST', headers: dict = None, data: dict = None):
     """
@@ -67,7 +64,6 @@ def parse_html(html_string: str) -> str:
     return soup.get_text()
 
 
-
 def convert_text_to_docx(title: str , content: str) -> Document:
 
     """
@@ -95,30 +91,6 @@ def load_dict_from_pickle(filename):
     """Loads a dictionary from a pickle file."""
     with open(filename, 'rb') as f:  # 'rb' for binary read
         return pickle.load(f)
-
-def convert_docx_to_text(doc: Document) -> str:
-    """
-        Extracts all text from the given Document object.
-
-        Args:
-        - doc (Document): The Document object to extract text from.
-
-        Returns:
-        - str: The extracted text as a single string.
-        """
-    # Initialize an empty string to hold all text
-    full_text = []
-
-    # Loop through all paragraphs in the document
-    for para in doc.paragraphs:
-
-        full_text.append(para.text)
-
-    # Join all the paragraphs into one string
-    document_text = '\n'.join(full_text)
-
-    return document_text
-
 
 def convert_docx_to_bytes(doc: Document) -> bytes:
     """Converts a `Document` object to bytes."""
