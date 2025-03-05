@@ -45,6 +45,7 @@ class BlobStorageService(BaseStorage):
 
         Args:
             file_name (str): The desired name of the file (without extension).
+            file name has to be unique and should be a union of the sprints with "_" , i.e. "sprint 28_sprint 32"
             title (str): The title to be used in the document.
             content (str): The text content to be converted to a .docx file.
 
@@ -75,7 +76,8 @@ class BlobStorageService(BaseStorage):
         Retrieves a file from Azure Blob Storage based on its signature (file name).
 
         Args:
-            signature (str): The unique file name (signature) to identify the file on Blob Storage.
+            signature (str): The unique file name without extension to identify the file on Blob Storage.
+            should be a union of the sprints with "_" , i.e. "sprint 28_sprint 32"
 
         Returns:
             Document: A docx Document object containing the file's content.

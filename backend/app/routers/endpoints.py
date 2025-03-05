@@ -59,7 +59,12 @@ async def get_generator():
 
 # Dependency to create an instance of StorageService
 async def get_storage_service():
+    """
+       Creates and returns a BlobStorageService instance to fetch and save release notes.
+       This function handles the creation of the storage service.
+       """
     try:
+        logger.info(f"Injecting Storage configuration into the BlobStorageService")
         storage_service = BlobStorageService(blob_storage_account_url, blob_storage_container_name)
         return storage_service
     except Exception as e:

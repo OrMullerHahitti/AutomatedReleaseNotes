@@ -43,7 +43,6 @@ class BaseStorage(ABC):
     @abstractmethod
     async def save_file(self, doc: Document, file_name: str) -> bool:
         """
-        Convert LLM response to structured text (????)
         Save the given Document object into the database or storage system.
         returns true iff file upload succeeded
         """
@@ -53,7 +52,7 @@ class BaseStorage(ABC):
     async def fetch_file(self , signature: str) -> Optional[Document]:
         """
         Fetch a file (Document object) from the storage system.
-        signature = file name string to look for
+        signature = file name string, which has to be unique
         returns the Document itself or None
         """
         pass
