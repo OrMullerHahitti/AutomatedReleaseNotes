@@ -44,4 +44,3 @@ allowed_origins_prod = os.getenv('ALLOWED_ORIGINS_PROD')
 
 
 
-

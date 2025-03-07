@@ -8,7 +8,7 @@ from backend.app.services.storage_services import BlobStorageService
 from backend.app.utils.config import (authentication_headers_azure, azure_devops_org, azure_devops_project, azure_devops_team,
                                       azure_devops_iteration_team, blob_storage_account_url, blob_storage_container_name, logging_level)
 from backend.app.models.models import Sprint, SprintRequest
-from backend.app.utils.useful_functions import convert_text_to_docx, convert_docx_to_bytes
+from backend.app.utils.useful_functions import convert_text_to_docx, convert_docx_to_bytes, get_container_id
 import logging
 from backend.app.services.llm_services.generate import BasicGenerator
 from backend.app.utils.useful_functions import get_azure_llm
@@ -106,9 +106,11 @@ async def generate_release_notes(request: SprintRequest,
     try:
         logger.info("Starting release note process...")
 
-        # Construct the file signature based on sprint identifiers
+        # Construct the file signature based on sprint identifiers + container id
         sprints = request.sprints
-        file_signature = "_".join(sprints) + ".docx"
+        container_id = get_container_id()
+        file_signature = "_".join(sprints) + "_" + container_id + ".docx"
+        logging.info(f"requested file signature is: {file_signature}")
 
         # Try to fetch the file from storage
         doc = storage.fetch_file(file_signature)
@@ -139,6 +141,7 @@ async def generate_release_notes(request: SprintRequest,
 
         # Convert the Document to bytes for response
         doc_bytes = convert_docx_to_bytes(doc)
+        # print(doc_bytes)
 
         # Return the document as bytes in the response
         return StreamingResponse(BytesIO(doc_bytes),

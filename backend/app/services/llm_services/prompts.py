@@ -113,7 +113,7 @@ class summarize_format:
     format_one:str = "summarize the input data below"
     format_two:str = "summarize the input data below in a way that is easy to understand for business people"
     format_three:str = "summarize the input data below in a way that is easy to understand for business people"
-#TODO: amit needs to complete the examples
+
 class examples:
     example_one:str = "this is an example of a release note: 'Fixed a bug where the user could not log in'"
     example_two:str = "this is an example of a release note: 'Fixed a bug where the user could not log in'"

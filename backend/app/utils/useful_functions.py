@@ -7,7 +7,12 @@ from backend.app.models.models import WorkItem
 from bs4 import BeautifulSoup
 from docx import Document
 from io import BytesIO
+import logging
+from backend.app.utils.config import logging_level
 
+
+logging.basicConfig(level=getattr(logging, logging_level , logging.INFO))
+logger = logging.getLogger(__name__)
 
 # <<<<<<< HEAD
 # =======
@@ -97,3 +102,19 @@ def convert_docx_to_bytes(doc: Document) -> bytes:
     byte_io = BytesIO()
     doc.save(byte_io)
     return byte_io.getvalue()
+
+
+def get_container_id() -> str :
+    """return the Container ID to version the release note file name"""
+    try:
+        with open("/proc/self/cgroup") as f:
+            lines = f.readlines()
+            for line in lines:
+                if "docker" in line:  # Docker containers have "docker" in the cgroup line
+                    container_id = line.split("/")[-1].strip()
+                    logging.info(f"found Container id: {container_id}")
+                    return container_id
+    except Exception as e:
+        logging.error("Could not access /proc/self/cgroup to get the container id.")
+        logging.warning("file signatures will not be unique and code changes will not reflect when fetching existing files from storage.")
+        return ""

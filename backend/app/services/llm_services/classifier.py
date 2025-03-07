@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-#from backend.app.routers.LLM import work_items
 from backend.app.services.llm_services.prompts import *
 from langchain.output_parsers import PydanticOutputParser
 from langchain_core.prompts import PromptTemplate
