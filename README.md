@@ -19,6 +19,7 @@ AZURE_DEVOPS_TEAM: The name of the Azure DevOps team.
 AZURE_DEVOPS_REPO: The name of the Azure DevOps repository.
 AZURE_DEVOPS_ITERATION_TEAM: The name of the iteration team in Azure DevOps.
 AZURE_DEVOPS_PAT: Your Personal Access Token (PAT) for authenticating with Azure DevOps. This is encoded and used for API requests.
+**IMPORTANT!** PAT EXPIRES EVERY ~3 MONTHS. 
 
 Logging Configuration:
 LOGGING_LEVEL: The level of logging (e.g., INFO, DEBUG, ERROR).
@@ -26,7 +27,7 @@ LOGGING_LEVEL: The level of logging (e.g., INFO, DEBUG, ERROR).
 Azure OpenAI Configuration:
 AZURE_OPENAI_ENDPOINT: The endpoint URL for Azure OpenAI services.
 
-Azure App Configuration:
+Azure App Configuration (our app name is "automatic-release-notes-app" in Entra ID):
 AZURE_APP_TENANT_ID: The Tenant ID for Azure Active Directory (Azure AD).
 AZURE_APP_CLIENT_SECRET: The client secret used for authenticating with Azure AD.
 AZURE_APP_CLIENT_ID: The client ID of the registered Azure application.
@@ -68,7 +69,7 @@ REACT_APP_CONFETTI_SPREAD: The spread of the confetti particles (in degrees). A 
     ```
 4. Install npm (nodejs) - go to https://nodejs.org/en and follow the instructions.
 
-5. Make sure the .env files are set up correctly.
+5. Make sure the .env files are set up correctly - some variables such as the PAT and client secret may be expired.
 
 ## How to Use (locally)
 1. open 2 terminals and navigate to the root directory - "AutomatedReleaseNotes" 
